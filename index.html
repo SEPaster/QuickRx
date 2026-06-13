@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickRx - All about ร้านยา</title>
+    <style>
+        :root {
+            /* Palette mapped directly from image_d1dd23.png */
+            --color-cream: #EFECE3;      
+            --color-light-blue: #92B2DE; 
+            --color-slate-blue: #4775AE; 
+            --color-black: #000000;      
+            
+            /* Modern UI System Tokens */
+            --bg-app: #FDFDFB;
+            --bg-surface: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #4A4A4A;
+            --text-muted: #767676;
+            --border-subtle: rgba(0, 0, 0, 0.07);
+            --border-focus: var(--color-slate-blue);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-pill: 9999px;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+            
+            --danger-bg: #FFF5F5;
+            --danger-text: #C53030;
+            --danger-border: #FEB2B2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* Prevent horizontal page shaking on mobile devices */
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Modernized Minimalist Header */
+        header {
+            background: linear-gradient(135deg, var(--color-black) 0%, #1A1A1A 100%);
+            color: #FFFFFF;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-cream), var(--color-light-blue), var(--color-slate-blue));
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: var(--color-light-blue);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+            margin-top: -24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Modern Capsule Tab Selector Container */
+        .tabs-navigation-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+            width: 100%;
+            overflow-x: auto; /* Allow horizontal scrolling on mobile tabs if elements crowd */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs-nav {
+            display: inline-flex;
+            background-color: var(--color-cream);
+            border-radius: var(--radius-pill);
+            padding: 6px;
+            gap: 4px;
+            box-shadow: var(--shadow-sm);
+            max-width: 100%;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-pill);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-black);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .tab-btn.active {
+            background-color: var(--bg-surface);
+            color: var(--color-black);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* High-Visibility Live Search Dashboard Component */
+        .search-wrapper {
+            max-width: 600px;
+            margin: 0 auto 32px auto;
+            position: relative;
+            animation: fadeIn 0.4s ease;
+            width: 100%;
+        }
+
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-control {
+            width: 100%;
+            padding: 16px 100px 16px 48px; /* Extra padding right to make room for counter label */
+            border: 1.5px solid var(--color-cream);
+            border-radius: var(--radius-pill);
+            font-size: 1rem;
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
+        }
+
+        .search-control:focus {
+            outline: none;
+            border-color: var(--color-slate-blue);
+            background-color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(71, 117, 174, 0.12);
+        }
+
+        .search-counter {
+            position: absolute;
+            right: 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-slate-blue);
+            background-color: rgba(146, 178, 222, 0.15);
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px dashed var(--color-light-blue);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sleek Modern Table Architecture */
+        .table-responsive {
+            overflow-x: auto; /* Isolates layout changes, letting large table structure scroll internally without breaking screen width */
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #F8F7F4;
+            color: var(--color-black);
+            padding: 18px 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            vertical-align: top;
+            color: var(--text-secondary);
+            transition: background-color 0.2s ease;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(146, 178, 222, 0.06);
+        }
+
+        td strong {
+            color: var(--color-black);
+            font-weight: 600;
+        }
+
+        td span {
+            display: block;
+            margin-top: 4px;
+            color: var(--color-slate-blue);
+            font-size: 0.85rem;
+        }
+
+        /* Modern Kanban UI Card Grid */
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .kanban-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kanban-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-light-blue);
+        }
+
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            gap: 12px;
+        }
+
+        .kanban-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--color-black);
+            line-height: 1.3;
+        }
+
+        .kanban-badge {
+            background-color: rgba(71, 117, 174, 0.1);
+            color: var(--color-slate-blue);
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .kanban-field {
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            padding-bottom: 10px;
+        }
+
+        .kanban-field:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .kanban-label {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        /* Modernized Dashboard Calculator Cards */
+        .calc-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-md);
+            width: 100%;
+        }
+
+        .calc-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-black);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calc-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .form-control {
+            padding: 14px 16px;
+            border: 1.5px solid var(--color-cream);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            background-color: #FAFAFA;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(71, 117, 174, 0.15);
+        }
+
+        .btn-calc {
+            width: 100%;
+            background-color: var(--color-black);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-calc:hover {
+            background-color: var(--color-slate-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(71, 117, 174, 0.2);
+        }
+
+        .calc-result {
+            margin-top: 20px;
+            padding: 18px;
+            background-color: #F0FDF4;
+            border-left: 4px solid #16A34A;
+            border-radius: var(--radius-md);
+            color: #14532D;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .reference-box {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #FAF9F6;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-cream);
+            font-size: 0.95rem;
+        }
+
+        .disclaimer-box {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .disclaimer-title {
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+            padding: 32px 16px 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Comprehensive Responsive Media Query Engine Adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 16px;
+            }
+
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .container {
+                padding: 0 16px;
+                margin-top: -16px; /* Reduced negative margin overlap to look proper on small screens */
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            .search-control {
+                padding: 14px 90px 14px 40px;
+                font-size: 0.95rem;
+            }
+
+            .search-icon {
+                left: 14px;
+            }
+
+            .kanban-container {
+                grid-template-columns: 1fr; /* Stack cards sequentially into one single-column timeline */
+                gap: 16px;
+            }
+
+            .calc-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .calc-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>All about ร้านยา</h1>
+        <p>QuickRx Executive Clinical Database</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs-navigation-wrapper">
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab('table-view')">📋 Table Layout</button>
+                <button class="tab-btn" onclick="switchTab('kanban-view')">📱 Mobile Cards</button>
+                <button class="tab-btn" onclick="switchTab('pediatric-tab')">👶 Pediatric Engine</button>
+            </div>
+        </div>
+
+        <div class="search-wrapper" id="global-search-container">
+            <div class="search-input-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="db-search" class="search-control" placeholder="Search disorders, systems..." oninput="executeDataFilter()">
+                <span class="search-counter" id="match-counter">0 found</span>
+            </div>
+        </div>
+
+        <div id="table-view" class="tab-content active">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>disorders</th>
+                            <th>system</th>
+                            <th>1st line</th>
+                            <th>2nd line</th>
+                            <th>Alternative line</th>
+                            <th>remark ยา</th>
+                            <th>remark โรค</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medication-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="kanban-view" class="tab-content">
+            <div class="kanban-container" id="kanban-cards-wrapper">
+                </div>
+        </div>
+
+        <div id="pediatric-tab" class="tab-content">
+            <div class="calc-card">
+                <div class="calc-title">⚖️ Weight-Based Dosing Calculator</div>
+                <div class="calc-row">
+                    <div class="form-group">
+                        <label>Child's Weight (kg)</label>
+                        <input type="number" id="gen-weight" class="form-control" placeholder="e.g., 20">
+                    </div>
+                    <div class="form-group">
+                        <label>Dose per kg (mg/kg)</label>
+                        <input type="number" id="gen-dose-mg" class="form-control" placeholder="e.g., 15">
+                    </div>
+                </div>
+                <button class="btn-calc" onclick="calculateGenericDose()">Calculate Active Dose</button>
+                <div id="gen-calc-result" class="calc-result" style="display: none;"></div>
+            </div>
+
+            <div class="calc-card">
+                <div class="calc-title">💊 Pediatric Medication Dosing Reference</div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                    Select a medication formulation and input the target patient weight to access calculations instantly.
+                </p>
+                <div class="calc-row">
+                    <div class="form-group">
+                        <label>Select Formulation Profile</label>
+                        <select id="ped-med-select" class="form-control" onchange="runPedMedCalc()">
+                            <option value="">-- Select formulation profile --</option>
+                            <option value="azithromycin">Azithromycin 200 mg/5mL</option>
+                            <option value="amox250">Amoxicillin 250 mg/5mL</option>
+                            <option value="amox125">Amoxicillin 125 mg/5mL</option>
+                            <option value="para120">Paracetamol 120 mg/5mL</option>
+                            <option value="para160">Paracetamol 160 mg/5mL</option>
+                            <option value="para250">Paracetamol 250 mg/5mL</option>
+                            <option value="bromhexine">Bromhexine 4 mg/5mL</option>
+                            <option value="levodropropizine">Levodropropizine 30 mg/5mL</option>
+                            <option value="ibuprofen">Ibuprofen 100 mg/5mL</option>
+                            <option value="desloratadine">Desloratadine 0.5 mg/mL</option>
+                            <option value="cetirizine">Cetirizine 1 mg/mL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Weight (kg)</label>
+                        <input type="number" id="ped-weight" class="form-control" placeholder="e.g., 20" oninput="runPedMedCalc()">
+                    </div>
+                </div>
+                <div id="ped-reference-output" class="reference-box">Select a medication profile to load data.</div>
+            </div>
+
+            <div class="calc-card" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <div class="calc-title">📋 Complete Clinical Guideline Directory</div>
+                <table style="min-width: 600px;">
+                    <thead>
+                        <tr>
+                            <th>Medication & Formulation</th>
+                            <th>Pediatric Dosing Framework</th>
+                            <th>Age-Based Stratification Guidelines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Azithromycin 200 mg/5mL</strong></td>
+                            <td>10 mg/kg loading dose, then 5 mg/kg/day for 4 days</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amoxicillin 250 mg/5mL</strong></td>
+                            <td>20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amoxicillin 125 mg/5mL</strong></td>
+                            <td>20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Paracetamol 120 mg/5mL</strong></td>
+                            <td>10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Paracetamol 160 mg/5mL</strong></td>
+                            <td>10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Paracetamol 250 mg/5mL</strong></td>
+                            <td>10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bromhexine 4 mg/5mL</strong></td>
+                            <td>0.4-0.8 mg/kg/day in divided doses</td>
+                            <td style="color: var(--danger-text)">No reliable pediatric data available</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Levodropropizine 30 mg/5mL</strong></td>
+                            <td>1.5-2 mg/kg per dose TID-QID</td>
+                            <td style="color: var(--danger-text)">No reliable pediatric data available</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ibuprofen 100 mg/5mL</strong></td>
+                            <td>5-10 mg/kg per dose every 6-8 hours, max 40 mg/kg/day</td>
+                            <td><em>Calculated via weight metric</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desloratadine 0.5 mg/mL</strong></td>
+                            <td>Weight-based: 0.125-0.25 mg/kg/day</td>
+                            <td>6-11 months: Not well-established | 1-5 years: 1 mg OD | &gt;6 years: 2.5 mg OD</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cetirizine 1 mg/mL</strong></td>
+                            <td>0.25 mg/kg BID or 0.5 mg/kg OD</td>
+                            <td>6-23 months: 2.5 mg OD | 2-5 years: 2.5 mg OD or BID | &gt;6 years: 5-10 mg OD</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="disclaimer-box">
+                <div class="disclaimer-title">⚠️ MEDICAL PRACTICE DISCLAIMER</div>
+                This automation software engine acts exclusively as an secondary educational reference guide. Healthcare workers must cross-reference patient profiles, physical validation requirements, official packaging updates, and localized jurisdictional guidelines actively prior to approving or executing precise treatment plans.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>🎨 Quick Community Rx • Powered by Modern Clinical Interfaces</div>
+        <div>Educational framework directory. Double check against active regional practice registries.</div>
+        <div>Systems Engine Matrix Sync: June 13, 2026</div>
+    </footer>
+
+    <script>
+        // Data Store containing untouched clinical dataset strings
+        const rawMedicationData = [
+            { disorders: "ตาแห้ง (Dry eyes)", system: "Eye", line1: "น้ำตาเทียม หยด BID-QID", line2: "", altLine: "", remarkYa: "- น้ำตาเทียมรายเดือน เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา", remarkRok: "- หากหยอดต่อเนื่องเป็นเวลานาน แนะนำแบบรายวัน เนื่องจากไม่มีสารกันเสีย" },
+            { disorders: "เยื่อบุตาอักเสบจากอาการแพ้ (Allergic conjunctivitis)", system: "Eye", line1: "Hista-Oph 1 หยด QID", line2: "น้ำตาเทียม หยด BID-QID", altLine: "", remarkYa: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br><span>- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม</span>", remarkRok: "- เลี่ยงสารก่อแพ้<br>- ประคบเย็นช่วยลดอาการได้" },
+            { disorders: "เยื่อยุตาอักเสบจากไวรัส (Viral conjunctivitis)", system: "Eye", line1: "Hista-Oph 1 หยด QID", line2: "น้ำตาเทียม หยด BID-QID", altLine: "", remarkYa: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br><span>- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม</span><br><span>- เลี่ยงการให้ topical steroid เนื่องจากทำให้อาการแย่ลงได้</span>", remarkRok: "- เลี่ยงการใช้ของร่วมกับผู้อื่น/ งดว่ายน้ำ 2 สัปดาห์<br>- ประคบเย็นช่วยลดอาการได้<br>- หายได้เองใน 2 สัปดาห์ การหยอดตาจะช่วยลดอาการและทำให้สบายตาขึ้น" },
+            { disorders: "เยื่อบุตาอักเสบจากแบคทีเรีย (Bacterial conjunctivitis)", system: "Eye", line1: "Poly-oph 1 หยด QID <span>(นาน 5-7 วัน)</span>", line2: "", altLine: "", remarkYa: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา", remarkRok: "- โอกาสหายเองต่ำ จึงต้องใช้ยาฆ่าเชื้อต่อเนื่อง" },
+            { disorders: "ตากุ้งยิง (Stye)_มีอาการเฉพาะที่เท่านั้น", system: "Eye", line1: "Poly-oph 1 หยด QID <span>(นาน 5-7 วัน)</span>", line2: "Terramycin ointment ป้ายตา <span>(นาน 5-7 วัน)</span>", altLine: "", remarkYa: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br><span>- หยอด Poly-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม</span><br><span>- หยอดน้ำตาเทียมก่อน เว้น 15 นาที แล้วค่อยป้ายผึ้ง</span>", remarkRok: "- ประคบอุ่นช่วยลดอาการและทำให้หายเร็วขึ้นได้" },
+            { disorders: "ตากุ้งยิง (Stye)_มีอาการทาง systemic ด้วย", system: "Eye", line1: "Dicloxacillin 500 mg QID ac <span>(นาน 5-7 วัน)</span>", line2: "", altLine: "", remarkYa: "- <span>แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผง</span>ให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "ขี้หูอุดตัน", system: "Ear", line1: "Docusate sodium (DeWax) หยอดเข้ารูหู 5-10 หยด (ค้างไว้นาน 15 นาที)", line2: "", altLine: "", remarkYa: "- ใช้ลูกยางบีบน้ำอุ่นล้างรูหู ภายหลังจากหยอดยา", remarkRok: "" },
+            { disorders: "หูชั้นนอกอักเสบจากแบคทีเรีย (Bacterial otitis externa)", system: "Ear", line1: "Poly-oph 1 หยด QID <span>(นาน 7 วัน)</span>", line2: "", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "หูชั้นนอกอักเสบจากเชื้อรา (Fungal otitis externa)", system: "Ear", line1: "Clotrimazole 1% solution 4 หยด QID <span>(นาน 7 วัน)</span>", line2: "", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "หูชั้นกลางอักเสบ (Otitis media) อาการไม่รุนแรง", system: "Respiratory", line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", line2: "Amoxicillin 1000 mg BID pc <span>(นาน 5-7 วัน)</span>", altLine: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc <span>(นาน 3 วัน)</span>", remarkYa: "- <span>แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผง</span>ให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)<br>- <span>Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง</span> มี 6 แคปซูล)", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "หูชั้นกลางอักเสบ (Severe otitis media) อาการรุนแรง มีไข้สูง", system: "Respiratory", line1: "Amoxicillin-Clavulanic acid 1 g BID pc (นาน 5-7 วัน)", line2: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc <span>(นาน 3 วัน)</span>", altLine: "", remarkYa: "- <span>Augmentin (กินติดต่อกัน 7 วัน หยิบ 1 กล่อง</span>ให้ครบ 14 เม็ด)<br>- <span>Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง</span> มี 6 แคปซูล)", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "จมูกอักเสบจากภูมิแพ้ไม่รุนแรง (Mild allergic rhinitis)", system: "Respiratory", line1: "Cetirizine 10 mg OD pc", line2: "ล้างจมูกด้วยน้ำเกลือ", altLine: "", remarkYa: "- ยาแก้แพ้อาจทำให้ง่วงนอนได้ แต่ส่วนใหญ่มักง่วงน้อย", remarkRok: "" },
+            { disorders: "จมูกอักเสบภูมิแพ้รุนแรง (Severe allergic rhinitis)", system: "Respiratory", line1: "Mometasone furoate 0.05% พ่นยา 1 พ่นเข้ารูจมูกทั้ง 3 ข้าง วันละ 1 ครั้ง", line2: "ล้างจมูกด้วยน้ำเกลือ", altLine: "", remarkYa: "- พ่นยาสม่ำเสมอ เพื่อให้ผลการรักษามีประสิทธิภาพ เนื่องจากยาใช้เวลาออกฤทธิ์ (หลักสัปดาห์-เดือน)", remarkRok: "" },
+            { disorders: "ไข้หวัด (Common cold)", system: "Respiratory", line1: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID", line2: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc", altLine: "Carbocysteine 500 mg (Solmax) TID pc", remarkYa: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง", remarkRok: "- สามารถล้างจมูกเพื่อช่วยลดอาการคัดจมูกได้" },
+            { disorders: "ไข้หวัดใหญ่ (Flu)", system: "Respiratory", line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", line2: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc", altLine: "Oseltamivir (ต้องไปรับยาที่โรงพยาบาล เมื่อเป็นผู้ป่วยความเสี่ยงสูง)", remarkYa: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง", remarkRok: "" },
+            { disorders: "คอหอยอักเสบจากไวรัส (Viral pharyngitis)", system: "Respiratory", line1: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID", line2: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "คอหอยอักเสบจากแบคทีเรีย (GAS pharyngitis)", system: "Respiratory", line1: "Amoxicillin 500 mg BID pc <span>(นาน 10 วัน)</span>", line2: "กรณีแพ้ penicillin = Azithromycin 500 mg OD pc <span>(นาน 5 วัน)</span>", altLine: "", remarkYa: "- <span>แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 10 วัน หยิบ 2 แผง</span>ให้ครบ 20 แคปซูล)<br>- <span>Zithromax (กินติดต่อกัน 5 วัน หยิบ 2 กล่อง</span> มี 12 แคปซูล)", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "ไซนัสอักเสบจากแบคทีเรีย (Viral sinusitis)", system: "Respiratory", line1: "Amoxicillin 500 mg TID pc <span>(นาน 5-7 วัน)</span>", line2: "Amoxicillin-Clavulanic acid 1 g BID pc <span>(นาน 5-7 วัน)</span>", altLine: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc <span>(นาน 5-7 วัน)</span>", remarkYa: "- <span>แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 5-7 วัน หยิบ 2 แผง</span>ให้ครบ 20 แคปซูล)<br>- <span>Zithromax (กินติดต่อกัน 5 วัน หยิบ 2 กล่อง</span> มี 12 แคปซูล)", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "เลิกบุหรี่ (Smoking cessation)", system: "Respiratory", line1: "Nicotine gum 2-4 mg เคี้ยวแล้วพัก สลับไปเรื่อยๆ ทุก<br>- 1-2 hr นาน 6 สัปดาห์<br>- 2-4 hr นาน 3 สัปดาห์<br>- 4-8 hr นาน 3 สัปดาห์", line2: "", altLine: "", remarkYa: "- ปกติสูบ 10-24 มวนต่อวัน เลือกขนาด 2 mg<br>- ปกติสูบมากกว่าเท่ากับ 25 มวนต่อวัน เลือกขนาด 4 mg", remarkRok: "" },
+            { disorders: "เวียนหัว (Dizziness)", system: "Nervous", line1: "Dimenhydrinate 50 mg TID pc", line2: "Betahistine 8-16 mg TID pc", altLine: "Cinnarizine 25 mg TID pc", remarkYa: "- Dimenhydrinate ทำให้มีอาการง่วงนอนมาก ระวังการขับขี่ยานพาหนะ หรือควบคุมเครื่องจักร", remarkRok: "" },
+            { disorders: "อาการปวด (Pain)", system: "Miscellaneous", line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", line2: "Mefenamic acid 500 mg TID pc", altLine: "Celecoxib 200 mg BID pc", remarkYa: "<span>- ห้ามจ่าย Celecoxib ในผู้ที่มีประวัติแพ้ sulfa<br></span>- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง", remarkRok: "" },
+            { disorders: "อาการปวดปลายประสาท (Neuropathic pain)", system: "Nervous", line1: "Amitriptylline 10-25 mg OD hs", line2: "Gabapentin 300 mg OD q12h หรือ q8h", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "ปวดหัวไมเกรน (Migraine)", system: "Nervous", line1: "Ibuprofen 400 mg TID pc", line2: "Ergotamine 1 mg รับประทาน 1-2 เม็ดทันที ตามด้วย 1 เม็ดทุก 30 นาที <span>ไม่เกิน 6 เม็ดต่อวัน 10 เม็ดต่อสัปดาห์</span>", altLine: "Sumatriptan 25-100 mg q2hr <span>ไม่เกิน 200 mg ต่อวัน</span>", remarkYa: "<span>Ergotamine ห้ามใช้ร่วมกับยากลุ่ม<br>- PI inhibitor<br>- Macrolide<br>เนื่องจากทำให้เกิด Ergotism รุนแรงได้ ควรถามประวัติการใช้ยาก่อนเสมอ</span>", remarkRok: "" },
+            { disorders: "แผลในกระเพาะอาหาร (Gastric ulcer)", system: "Gastrointestinal", line1: "Omeprazole 20-40 mg ac เช้า <span>นาน 2-4 สัปดาห์</span> (อาจถึง 8 สัปดาห์ได้)", line2: "Antacid 30 mL QID pc", altLine: "Triple therapy for Helicobacter pylori<br>- Omeprazole 20 mg BID pc<br>- Amoxicillin 1000 mg BID pc<br>- Clarithromycin 500 mg BID pc", remarkYa: "", remarkRok: "- พยายามรับประทานอาหารให้ตรงเวลา" },
+            { disorders: "กรดไหลย้อน (GERD)", system: "Gastrointestinal", line1: "Omeprazole 20-40 mg OD ac เช้า <span>นาน 2-4 สัปดาห์</span>", line2: "Sodium alginate 15 mL TID pc + hs", altLine: "", remarkYa: "", remarkRok: "- ไม่ควรนอนราบทันทีหลังมื้ออาหาร" },
+            { disorders: "ท้องผูก (Constipation)", system: "Gastrointestinal", line1: "- ทั่วไป แต่ไม่รุนแรง: Milk of magnesia 30 mL OD<br>- ทั่วไป และรุนแรง: Senna หรือ Bisacodyl 2 เม็ด OD", line2: "เด็ก:<br>- Glycerin suppository 1 เม็ด rectal OD<br>- NaCl enema สวนทวาร", altLine: "สูงอายุ หรือตั้งครรภ์: Bulk forming laxative 1 ซอง ผสมน้ำ OD", remarkYa: "<span>-Senna ไม่ควรใช้ติดต่อกันบ่อยๆ เนื่องจากทำให้ลำไส้ชินได้</span><br><span>- ระวังการใช้ Milk of magnesia ในผู้ป่วยโรคไต<br></span>- เมื่อสวน NaCl enema แล้ว ให้กลั้นอุจจาระไว้ประมาณ 5-15 นาที เมื่อทนไม่ไหวค่อยลุกไปเข้าห้องน้ำ เพื่อให้ยาออกฤทธิ์ได้ดีที่สุด", remarkRok: "- เพิ่มปริมาณกากใย โดยการรับประทานผัก ผลไม้ หรือดื่มน้ำมากๆ<br>- Tramadol ทำให้มีอาการท้องผูกได้ อาจสอบถามผู้ป่วยเพิ่มเติมเรื่องยาที่ใช้ประจำ" },
+            { disorders: "ท้องเสีย (Diarrhea)", system: "Gastrointestinal", line1: "ORS ผสมน้ำ จิบบ่อยๆตลอดวัน", line2: "Loperamide 4 mg ทันทีตามด้วย 2 mg ทุกครั้งที่ถ่าย ไม่เกิน 16 mg ต่อวัน", altLine: "Diosmectite 3 g TID pc", remarkYa: "", remarkRok: "- งดนม หรืออาหารเสื้อปนเปื้อนชั่วคราว" },
+            { disorders: "ท้องเสียจากการติดเชื้อแบคทีเรีย (Infectious diarrhea)", system: "Gastrointestinal", line1: "ORS ผสมน้ำ จิบบ่อยๆตลอดวัน", line2: "Norfloxacin 400 mg BID <span>(3-7 วัน)</span>", altLine: "Domperidone 10 mg TID ac", remarkYa: "", remarkRok: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorders: "ริดสีดวงทวาร (Hemorrhoids)", system: "Gastrointestinal", line1: "Daflon 500 mg<br>- 2x3 นาน 4 วัน<br>- 2x2 นาน 3 วัน<br>- 2x1 จนหมดกล่อง", line2: "Proctosedyl suppository เหน็บ OD", altLine: "Proctosedyl cream ทา OD-BID", remarkYa: "- Daflon 500 mg 1 กล่องมี 30 เม็ด<span><br>- Protosedyl suppository และ cream ควรใช้ไม่นานเกิน 5-7 วัน</span>", remarkRok: "- เลี่ยงการนั่งในห้องน้ำนาน" },
+            { disorders: "ผื่นผิวหนังอักเสบ (Atopic dermatitis)", system: "Skin", line1: "Triamcinolone 0.02-0.1% cream ทาบางๆบริเวณที่เป็น BID", line2: "บริเวณที่ผิวบาง เช่น ผิวหน้า เลือกใช้ Hydrocortisone cream ทาบางๆบริเวณที่เป็น BID", altLine: "บริเวณผิวหนา เช่น ฝ่ามือ ฝ่าเท้า เลือกใช้ Clobetasol cream ทาบางๆบริเวณที่เป็น BID", remarkYa: "<span>เมื่อผื่นหายแล้ว ไม่จำเป็นต้องใช้ต่อเนื่อง สามารถหยุดยาได้เลย เพื่อป้องกัน s/E จากการใช้ corticosteroid เป็นเวลานาน</span>", remarkRok: "" },
+            { disorders: "ผื่นผ้าอ้อม (Diaper rash)", system: "Skin", line1: "Zinc oxide ทา BID", line2: "", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "ผื่นแพ้ต่อมไขมัน (Sebderm or Seborrheic Dermatitis)", system: "Skin", line1: "Selenium sulfide ทา BID", line2: "Coal tar ทา BID", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "การป้องกันแผลติดเชื้อ (Wound infection prevention)", system: "Skin", line1: "Dicloxacillin 250 mg QID <span>(นาน 2 วัน)</span>", line2: "กรณีแพ้ Penicillin = Clindamycin 150-300 mg QID <span>(นาน 2 วัน)</span>", altLine: "ล้างแผลด้วยน้ำเกลือ สามารถใช้แอลกอฮอล์เช็ดรอบแผลเพื่อทำความสะอาดรอบๆได้", remarkYa: "- <span>แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 2 วัน หยิบ 1</span> แผงให้ครบ 10 แคปซูล)", remarkRok: "" },
+            { disorders: "แผลติดเชื้อ (Infected wound)", system: "Skin", line1: "Dicloxacillin 500 mg QID <span>(นาน 5-7 วัน)</span>", line2: "กรณีแพ้ Penicillin = Clindamycin 150-300 mg QID <span>(นาน 5-7 วัน)</span>", altLine: "ล้างแผลด้วยน้ำเกลือ สามารถใช้แอลกอฮอล์เช็ดรอบแผลเพื่อทำความสะอาดรอบๆได้", remarkYa: "- <span>แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผง</span>ให้ครบ 20 แคปซูล)", remarkRok: "" },
+            { disorders: "กลาก (Ringworm)", system: "Skin", line1: "Antifungal cream หรืออาจใช้สูตรผสมกับ steroid ก็ได้ ทา BID", line2: "", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "เกลื้อน (Tinea Versicolor)", system: "Skin", line1: "Antifungal cream หรืออาจใช้สูตรผสมกับ steroid ก็ได้ ทา BID", line2: "", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "ราที่เล็บ (Onychomycosis)", system: "Skin", line1: "Itraconazole 200 mg 1x2 pc นาน 1 สัปดาห์ เว้น 3 สัปดาห์ นับเป็น 1 cycle<br>- เล็บมือ 2 เดือน<br>- เล็บเท้า 3 เดือน", line2: "", altLine: "", remarkYa: "กินยานาน 1 สัปดาห์ เว้น 3 สัปดาห์ นับเป็น 1 cycle เรียกว่า Pulse therapy", remarkRok: "" },
+            { disorders: "สะเก็ดเงิน (Psoriasis)", system: "Skin", line1: "Topical corticosteroid ทา BID", line2: "Calcitriol ointment ทา BID", altLine: "Topical retinoids ทา OD", remarkYa: "- Topical retinoids ทาก่อนนอน อาจทำให้ผิวไวต่อแสงได้ แนะนำให้ใช้สารกัดแดดร่วมด้วย", remarkRok: "" },
+            { disorders: "อีสุกอีใส (Chickenpox)", system: "Infectious", line1: "Aciclovir 800 mg q6h <span>(นาน 5 วัน)</span>", line2: "", altLine: "", remarkYa: "- <span>Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)</span>", remarkRok: "" },
+            { disorders: "งูสวัด (Herpes zoster)", system: "Infectious", line1: "Aciclovir 800 mg q4h <span>(นาน 7-10 วัน)</span>", line2: "", altLine: "", remarkYa: "- <span>Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)</span>", remarkRok: "ผู้ป่วยที่เคยเป็นอีสุกอีใส เมื่อพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชื้อไวรัสกลับมาได้" },
+            { disorders: "เริมที่ปาก (Herpes simplex)", system: "Infectious", line1: "เป็นครั้งแรก<br>- Aciclovir 200 mg q4hr <span>(นาน 7-10 วัน)<br></span>- Aciclovir 400 mg q8hr (นาน 7-10 วัน)", line2: "เป็นครั้งถัดไป<br>- Aciclovir cream ทา q4hr <span>(นาน 5 วัน)</span>", altLine: "", remarkYa: "- <span>Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)</span>", remarkRok: "การพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชิ้อไวรัสในปมประสาท ให้กลับมาก่อโรคได้" },
+            { disorders: "เริมที่อวัยวะเพศ (Herpes simplex)", system: "Infectious", line1: "เป็นครั้งแรก<br>- Aciclovir 200 mg q4hr <span>(นาน 7-10 วัน)</span><br>- Aciclovir 400 mg q8hr (นาน 7-10 วัน)", line2: "เป็นครั้งถัดไป<br>- Aciclovir cream ทา q4hr <span>(นาน 5 วัน)</span>", altLine: "", remarkYa: "- <span>Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)</span>", remarkRok: "การพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชิ้อไวรัสในปมประสาท ให้กลับมาก่อโรคได้" },
+            { disorders: "หิด (Scabies)", system: "Skin", line1: "Permathrin 5% ทาไว้ 8-14 hr แล้วล้างออก", line2: "", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการใช้ของร่วมกับผู้อื่น และทำความสะอาดเครื่องนอนด้วยน้ำร้อน" },
+            { disorders: "เหา โลน (Lice)", system: "Skin", line1: "Permathrin 1% ทาไว้ 10 นาที แล้วล้างออก", line2: "", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการใช้ของร่วมกับผู้อื่น โดยเฉพาะหวี และทำความสะอาดเครื่องนอนด้วยน้ำร้อน" },
+            { disorders: "รังแค (Dandruff)", system: "Skin", line1: "Selenium sulfide สระ 2-3 ครั้งต่อสัปดาห์", line2: "Coal tar สระ 2-3 ครั้งต่อสัปดาห์", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "ผมร่วง (Alopecia)", system: "Skin", line1: "Finasteride 1 mg hs <span>(เฉพาะผู้ชาย)</span>", line2: "Minoxidil 2.5-5% ทาลงหนังศีรษะ BID", altLine: "", remarkYa: "", remarkRok: "" },
+            { disorders: "กระเพาะปัสสาวะอักเสบ (Urinary tract infection - UTI)", system: "Infectious", line1: "Norfloxacin 400 mg BID ac <span>(นาน 3 วัน)</span>", line2: "Ciprofloxacin 500 mg BID ac <span>(นาน 3 วัน)</span>", altLine: "Ciprofloxacin 500 mg BID ac <span>(นาน 7 วัน)</span>", remarkYa: "", remarkRok: "ดื่มน้ำในปริมาณมากขึ้น และไม่กลั้นปัสสาวะ" },
+            { disorders: "ยาคุมกำเนิด (Oral contraceptive)", system: "OBGY", line1: "Combined oral contraceptive pills (COCs) วันละ 1 เม็ด<br>- แบบ 21 เม็ด เว้น 7 วันหลังหมดแผง ค่อยเริ่มต้นแผงใหม่<br>- แบบ 28 เม็ด เริ่มแผงต่อไปได้ทันที", line2: "Progestin only pills (POPs) สำหรับ<br>- อายุมากกว่า 35 ปี ที่สูบบุหรี่<br>- SLE<br>- ไมเกรน<br>- มะเร็งเต้านม/ มะเร็งอวัยวะสืบพันธุ์ที่เกี่ยวกับฮอร์โมน<br>- หลอดเลือดอุดตัน (Venous thromboembolism)<br>- โรคอ้วน เบาหวาน ความดันโลหิตสูง", altLine: "", remarkYa: "Yas (Drospirenone)/ Dian-35 (Cyproterone) อาจใช้เพื่อคุมกำเนิด และลดสิวได้", remarkRok: "" },
+            { disorders: "ยาคุมกำเนิดฉุกเฉิน (Emergency contraceptive)", system: "OBGY", line1: "Levonorgestrel 1.5 mg ทันที", line2: "", altLine: "", remarkYa: "รับประทานทันที ภายใน 72 ชั่วโมงหลังเพศสัมพันธ์ (หากมีน้ำให้ทานทันทีในร้านเลย) ไม่แนะนำให้ใช้เกิน 2 ครั้งภายใน 1 รอบเดือน", remarkRok: "" },
+            { disorders: "เลื่อนประจำเดือน (Period delay pills)", system: "OBGY", line1: "Norethisterone 5 mg BID-TID ก่อนกำหนดประจำเดือนอย่างน้อย 3 วัน เมื่อหยุดยาแล้ว ประจำเดือนจะมาภายใน 2-3 วัน", line2: "", altLine: "", remarkYa: "ไม่ควรใช้ติดต่อกันเกิน 10-14 วัน", remarkRok: "" },
+            { disorders: "เหงือกอักเสบ (Gingivitis)", system: "Miscellaneous", line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", line2: "กรณีมีหนอง = Amoxicillin-clavulanic acid 1 g BID pc <span>(นาน 5-7 วัน)</span>", altLine: "กรณีมีหนอง และแพ้ Penicillin = Clindamycin 150-300 mg QID pc (นาน 5-7 วัน)", remarkYa: "<span>Augmentin (กินติดต่อกัน 7 วัน หยิบ 1 กล่อง</span>ให้ครบ 14 เม็ด)", remarkRok: "" },
+            { disorders: "อาการนอนไม่หลับ (Insomnia)", system: "Nervous", line1: "พบจิตแพทย์เพื่อปรึกษา", line2: "Diphenhydramine 50 mg OD hs", altLine: "", remarkYa: "ยาแก้แพ้ (PheNZ) ช่วยให้ง่วงนอน เนื่องจากเป็นฤทธิ์ของยาแก้แพ้ชนิดง่วงมาก ช่วยได้ระยะสั้นเท่านั้น อย่างไรหากมีปัญหาเรื้อรังแนะนำปรึกษาจิตแพทย์เพิ่มเติม", remarkRok: "" },
+            { disorders: "แผลในปาก (Canker sore)", system: "Miscellaneous", line1: "Triamcinolone oral paste", line2: "", altLine: "", remarkYa: "อาจถามลูกค้าว่า ต้องการรับแบบซอง หรือแบบหลอด", remarkRok: "" },
+            { disorders: "ตามหายารักษาโรคเรื้อรัง (Chronic diseases medication)", system: "Miscellaneous", line1: "ลูกค้ามักมีตัวอย่างแผงยาให้ดู ระวังการหยิบยาชื่อคล้ายมองคล้าย(LASA medication) สลับความแรง", line2: "", altLine: "", remarkYa: "ให้ลูกค้ารับประทานตามที่แพทย์สั่งได้เลย", remarkRok: "" },
+            { disorders: "หนองใน (Gonorrhea)", system: "Infectious", line1: "Cefixime 800 mg once", line2: "Doxycycline 100 mg BID <span>(นาน 7 วัน)</span>", altLine: "", remarkYa: "", remarkRok: "ควรรักษาคู่นอนร่วมด้วย เนื่องจากเป็นโรคติดต่อทางเพศสัมพันธ์" },
+            { disorders: "แผลริมอ่อน (Chancroid)", system: "Infectious", line1: "Ciprofloxacin 500 mg BID pc <span>(นาน 3 วัน)</span>", line2: "", altLine: "", remarkYa: "", remarkRok: "ควรรักษาคู่นอนร่วมด้วย เนื่องจากเป็นโรคติดต่อทางเพศสัมพันธ์" },
+            { disorders: "ปวดเมื่อยกล้ามเนื้อ (Muscle ache)", system: "Musculoskeletal", line1: "Counterpain ทาบริเวณที่ปวดเมื่อย TID", line2: "Paracetamol-Ophenadrine citrate 500 mg TID pc", altLine: "", remarkYa: "<span>Norgesic ไม่ควรกินติดต่อกันเกิน 3-5 วัน</span>", remarkRok: "" },
+            { disorders: "ปวดเก๊าท์ (Gout)", system: "Musculoskeletal", line1: "Colchicine 0.6 mg กิน 1-2 เม็ดทันที ตามด้วยครั้งละ 1 เม็ด q1-2hr หรือจนกว่าอาการจะดีขึ้น", line2: "", altLine: "", remarkYa: "<span>Colchicine ไม่ควรกินเกิน 8 เม็ดต่อวัน</span>", remarkRok: "" },
+            { disorders: "ตกขาวจากเชื้อรา (Candida vaginitis)", system: "OBGY", line1: "Clotrimazole 200 mg vaginal tablet เหน็บ OD <span>(นาน 3 วัน)</span>", line2: "", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการสวนล้างช่องคลอด" },
+            { disorders: "ตกขาวจากเชื้อแบคทีเรีย (Bacterial vaginitis)", system: "OBGY", line1: "Metronidazole 500 mg BID pc <span>(นาน 7 วัน)</span>", line2: "", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการสวนล้างช่องคลอด" },
+            { disorders: "ตกขาวจากเชื้อ Trichomonas (Trichomonal vaginitis)", system: "OBGY", line1: "Metronidazole 2 g once pc", line2: "", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการสวนล้างช่องคลอด" },
+            { disorders: "พยาธิ (Parasitic diseases)", system: "Infectious", line1: "Albendazole 400 mg once", line2: "กรณีคาดว่ามีการติดเชื้อปรสิต = Albendazole 400 mg BID <span>(นาน 3 วัน)</span>", altLine: "", remarkYa: "", remarkRok: "เลี่ยงการทานอาหารดิบ" }
+        ];
+
+        // Tab Switching Mechanics
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            // Toggle visibility of global search bar element based on tab context
+            const searchBar = document.getElementById('global-search-container');
+            if (tabId === 'pediatric-tab') {
+                searchBar.style.display = 'none';
+            } else {
+                searchBar.style.display = 'block';
+            }
+        }
+
+        // Clean value fallbacks
+        function formatValue(val) {
+            return (!val || val.trim() === "") ? "-" : val;
+        }
+
+        // Real-Time Search Handler Engine
+        function executeDataFilter() {
+            const term = document.getElementById('db-search').value.toLowerCase().trim();
+            renderLayoutViews(term);
+        }
+
+        // Initialize UI Render with integrated query filters
+        function renderLayoutViews(filterQuery = "") {
+            const tableBody = document.getElementById('medication-table-body');
+            const kanbanWrapper = document.getElementById('kanban-cards-wrapper');
+            const counterLabel = document.getElementById('match-counter');
+            
+            tableBody.innerHTML = '';
+            kanbanWrapper.innerHTML = '';
+
+            // Filter clinical datasets
+            const dataPool = rawMedicationData.filter(item => {
+                if (filterQuery === "") return true;
+                return item.disorders.toLowerCase().includes(filterQuery) ||
+                       item.system.toLowerCase().includes(filterQuery) ||
+                       item.line1.toLowerCase().includes(filterQuery) ||
+                       item.line2.toLowerCase().includes(filterQuery) ||
+                       item.altLine.toLowerCase().includes(filterQuery) ||
+                       item.remarkYa.toLowerCase().includes(filterQuery) ||
+                       item.remarkRok.toLowerCase().includes(filterQuery);
+            });
+
+            // Update found metrics status counter
+            counterLabel.textContent = `${dataPool.length} found`;
+
+            if (dataPool.length === 0) {
+                const emptyStateHtml = `<div class="no-results">🔍 No clinical entries match your search query details.</div>`;
+                kanbanWrapper.innerHTML = emptyStateHtml;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);">No entries found.</td>`;
+                tableBody.appendChild(tr);
+                return;
+            }
+
+            dataPool.forEach(item => {
+                // Table Row Construction
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${formatValue(item.disorders)}</strong></td>
+                    <td>${formatValue(item.system)}</td>
+                    <td>${formatValue(item.line1)}</td>
+                    <td>${formatValue(item.line2)}</td>
+                    <td>${formatValue(item.altLine)}</td>
+                    <td>${formatValue(item.remarkYa)}</td>
+                    <td>${formatValue(item.remarkRok)}</td>
+                `;
+                tableBody.appendChild(tr);
+
+                // Kanban Mobile Layout Construction
+                const card = document.createElement('div');
+                card.className = 'kanban-card';
+                card.innerHTML = `
+                    <div class="kanban-header">
+                        <div class="kanban-title">${formatValue(item.disorders)}</div>
+                        <div class="kanban-badge">${formatValue(item.system)}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">1st Line</div>
+                        <div>${formatValue(item.line1)}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">2nd Line</div>
+                        <div>${formatValue(item.line2)}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">Alternative Line</div>
+                        <div>${formatValue(item.altLine)}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">Remark ยา</div>
+                        <div>${formatValue(item.remarkYa)}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">Remark โรค</div>
+                        <div>${formatValue(item.remarkRok)}</div>
+                    </div>
+                `;
+                kanbanWrapper.appendChild(card);
+            });
+        }
+
+        // Part A Calculation Mechanics
+        function calculateGenericDose() {
+            const weight = parseFloat(document.getElementById('gen-weight').value);
+            const mgPerKg = parseFloat(document.getElementById('gen-dose-mg').value);
+            const resultBox = document.getElementById('gen-calc-result');
+
+            if (isNaN(weight) || isNaN(mgPerKg) || weight <= 0 || mgPerKg <= 0) {
+                resultBox.style.display = 'block';
+                resultBox.style.backgroundColor = 'var(--danger-bg)';
+                resultBox.style.color = 'var(--danger-text)';
+                resultBox.style.borderColor = 'var(--danger-border)';
+                resultBox.innerHTML = 'Please populate valid input targets to evaluate metrics.';
+                return;
+            }
+
+            const totalMg = weight * mgPerKg;
+            resultBox.style.display = 'block';
+            resultBox.style.backgroundColor = '#F0FDF4';
+            resultBox.style.color = '#14532D';
+            resultBox.style.borderColor = '#16A34A';
+            resultBox.innerHTML = `🎯 Calculated Target Output: Total of <strong>${totalMg.toFixed(2)} mg</strong> required per window phase.`;
+        }
+
+        // Part B Calculation Logic Map
+        function runPedMedCalc() {
+            const selectedMed = document.getElementById('ped-med-select').value;
+            const weight = parseFloat(document.getElementById('ped-weight').value);
+            const outputBox = document.getElementById('ped-reference-output');
+
+            if (!selectedMed) {
+                outputBox.innerHTML = "Select a medication profile to load data.";
+                return;
+            }
+
+            let responseHtml = "";
+
+            switch(selectedMed) {
+                case "azithromycin":
+                    responseHtml = `<strong>Formula Profile: Azithromycin 200 mg/5mL</strong><br>
+                                    • Guideline: 10 mg/kg loading dose, then 5 mg/kg/day for 4 days.<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const loadMg = weight * 10;
+                        const loadMl = (loadMg * 5) / 200;
+                        const maintMg = weight * 5;
+                        const maintMl = (maintMg * 5) / 200;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Targets:</strong><br>
+                                         - Day 1 (Loading): <strong>${loadMg.toFixed(1)} mg</strong> (${loadMl.toFixed(2)} mL) OD<br>
+                                         - Days 2-5 (Maintenance): <strong>${maintMg.toFixed(1)} mg</strong> (${maintMl.toFixed(2)} mL) OD</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch real-time liquid ml volume tracking.</em>`; }
+                    break;
+
+                case "amox250":
+                    responseHtml = `<strong>Formula Profile: Amoxicillin 250 mg/5mL</strong><br>
+                                    • Guideline: 20-45 mg/kg/day divided into 3 doses (6.7 - 15 mg/kg per dose TID).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 6.7;
+                        const minMl = (minMg * 5) / 250;
+                        const maxMg = weight * 15;
+                        const maxMl = (maxMg * 5) / 250;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose TID):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) TID</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "amox125":
+                    responseHtml = `<strong>Formula Profile: Amoxicillin 125 mg/5mL</strong><br>
+                                    • Guideline: 20-45 mg/kg/day divided into 3 doses (6.7 - 15 mg/kg per dose TID).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 6.7;
+                        const minMl = (minMg * 5) / 125;
+                        const maxMg = weight * 15;
+                        const maxMl = (maxMg * 5) / 125;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose TID):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) TID</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "para120":
+                    responseHtml = `<strong>Formula Profile: Paracetamol 120 mg/5mL</strong><br>
+                                    • Guideline: 10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 10;
+                        const minMl = (minMg * 5) / 120;
+                        const maxMg = weight * 15;
+                        const maxMl = (maxMg * 5) / 120;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose prn):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) every 4-6h</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "para160":
+                    responseHtml = `<strong>Formula Profile: Paracetamol 160 mg/5mL</strong><br>
+                                    • Guideline: 10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 10;
+                        const minMl = (minMg * 5) / 160;
+                        const maxMg = weight * 15;
+                        const maxMl = (maxMg * 5) / 160;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose prn):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) every 4-6h</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "para250":
+                    responseHtml = `<strong>Formula Profile: Paracetamol 250 mg/5mL</strong><br>
+                                    • Guideline: 10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 10;
+                        const minMl = (minMg * 5) / 250;
+                        const maxMg = weight * 15;
+                        const maxMl = (maxMg * 5) / 250;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose prn):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) every 4-6h</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "bromhexine":
+                    responseHtml = `<strong>Formula Profile: Bromhexine 4 mg/5mL</strong><br>
+                                    • Guideline Framework: 0.4 - 0.8 mg/kg/day in divided sequences.<br>
+                                    <span style='color:var(--danger-text); font-weight:700;'>⚠️ Alert: No reliable standardized pediatric validation tracks available.</span>`;
+                    break;
+
+                case "levodropropizine":
+                    responseHtml = `<strong>Formula Profile: Levodropropizine 30 mg/5mL</strong><br>
+                                    • Guideline Framework: 1.5 - 2 mg/kg per dose TID-QID.<br>
+                                    <span style='color:var(--danger-text); font-weight:700;'>⚠️ Alert: No reliable standardized pediatric validation tracks available.</span>`;
+                    break;
+
+                case "ibuprofen":
+                    responseHtml = `<strong>Formula Profile: Ibuprofen 100 mg/5mL</strong><br>
+                                    • Guideline: 5-10 mg/kg per dose every 6-8 hours (Max 40 mg/kg/day).<br>`;
+                    if (!isNaN(weight) && weight > 0) {
+                        const minMg = weight * 5;
+                        const minMl = (minMg * 5) / 100;
+                        const maxMg = weight * 10;
+                        const maxMl = (maxMg * 5) / 100;
+                        responseHtml += `<p style='margin-top:12px; color:#16A34A;'>⚡ <strong>Calculated Volume (Per Dose):</strong><br>
+                                         - Range: <strong>${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg</strong> (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} mL) q6-8hr</p>`;
+                    } else { responseHtml += `<em>Add weight metric to fetch volume tracking.</em>`; }
+                    break;
+
+                case "desloratadine":
+                    responseHtml = `<strong>Formula Profile: Desloratadine 0.5 mg/mL</strong><br>
+                                    • Scaled Metrics: 0.125 - 0.25 mg/kg/day<br>
+                                    • Age Breakdowns: 6-11 months: Not well-established | 1-5 years: 1 mg (2 mL) OD | &gt;6 years: 2.5 mg (5 mL) OD`;
+                    break;
+
+                case "cetirizine":
+                    responseHtml = `<strong>Formula Profile: Cetirizine 1 mg/mL</strong><br>
+                                    • Scaled Metrics: 0.25 mg/kg BID or 0.5 mg/kg OD<br>
+                                    • Age Breakdowns: 6-23 months: 2.5 mg OD | 2-5 years: 2.5 mg OD/BID | &gt;6 years: 5-10 mg OD`;
+                    break;
+            }
+
+            outputBox.innerHTML = responseHtml;
+        }
+
+        window.onload = function() {
+            renderLayoutViews();
+        };
+    </script>
+</body>
+</html>
