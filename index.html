@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Quick Community Rx - Pharmacy Reference & Pediatric Calculator | ร้านยา</title>
+    <meta name="description" content="Pharmacy reference guide with Kanban and Table views, plus pediatric dose calculator. Eye, ear, respiratory, GI treatments. Customizable interface.">
+    <meta name="keywords" content="pharmacy, medication, pediatric calculator, dose calculator, clinical reference, ร้านยา">
+    
+    <!-- Google Fonts - Multiple font options -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Light Bluish Grey Theme */
+            --primary: #5B8DBE;
+            --primary-light: #7BA3CC;
+            --primary-dark: #4A7BA8;
+            --secondary: #8BA8BC;
+            --background: linear-gradient(135deg, #E8EFF5 0%, #D4E0EB 100%);
+            --surface: #FFFFFF;
+            --surface-alt: #F5F8FB;
+            --text-primary: #2C3E50;
+            --text-secondary: #5B7C99;
+            --text-light: #8BA3B8;
+            --border: #D4E0EB;
+            --success: #6BA882;
+            --warning: #D4A574;
+            --error: #C17373;
+            
+            /* Font Selection - Change to your preferred font */
+            --font-primary: 'Inter', sans-serif;
+            --font-secondary: 'Poppins', sans-serif;
+        }
+        
+        /* Alternative font themes (uncomment to use) */
+        /* 
+        :root {
+            --font-primary: 'Roboto', sans-serif;
+            --font-secondary: 'Poppins', sans-serif;
+        }
+        */
+        
+        /* 
+        :root {
+            --font-primary: 'Lato', sans-serif;
+            --font-secondary: 'Poppins', sans-serif;
+        }
+        */
+        
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(91, 141, 190, 0.12);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-family: var(--font-secondary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin: 5px 0;
+        }
+        
+        .subtitle {
+            font-size: 0.9em;
+            opacity: 0.85;
+            margin-top: 10px;
+        }
+        
+        /* TAB NAVIGATION */
+        .tab-navigation {
+            display: flex;
+            gap: 0;
+            background: var(--surface-alt);
+            padding: 0;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            min-width: 150px;
+            font-family: var(--font-primary);
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(91, 141, 190, 0.05);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(91, 141, 190, 0.08);
+        }
+        
+        main {
+            padding: 30px 20px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* CONTROLS & SEARCH */
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .search-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-alt);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            transition: all 0.3s;
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(91, 141, 190, 0.1);
+        }
+        
+        .search-box::after {
+            content: '🔍';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .view-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .view-btn {
+            padding: 10px 18px;
+            border: 2px solid var(--border);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-family: var(--font-primary);
+        }
+        
+        .view-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            font-weight: 500;
+            font-family: var(--font-primary);
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        
+        /* KANBAN VIEW */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .kanban-board.hidden {
+            display: none;
+        }
+        
+        .system-column {
+            background: var(--surface-alt);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            min-height: 500px;
+        }
+        
+        .system-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .system-count {
+            background: var(--primary);
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: auto;
+        }
+        
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .condition-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(91, 141, 190, 0.1);
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .condition-card:hover {
+            box-shadow: 0 4px 16px rgba(91, 141, 190, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .card-title {
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-family: var(--font-secondary);
+        }
+        
+        .card-section {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .card-label {
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .treatment-badge {
+            display: inline-block;
+            background: rgba(91, 141, 190, 0.1);
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .presentation-text {
+            background: rgba(212, 165, 116, 0.1);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border-left: 2px solid var(--warning);
+            font-size: 0.9em;
+        }
+        
+        .remarks-text {
+            background: rgba(91, 141, 190, 0.05);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border-left: 2px solid var(--primary);
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        /* TABLE VIEW */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .table-wrapper.hidden {
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--surface-alt);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95em;
+            border-right: 1px solid var(--border);
+        }
+        
+        th:last-child {
+            border-right: none;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: var(--surface-alt);
+        }
+        
+        td {
+            padding: 12px;
+            font-size: 0.95em;
+            border-right: 1px solid var(--border);
+        }
+        
+        td:last-child {
+            border-right: none;
+        }
+        
+        .condition-name {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 150px;
+        }
+        
+        .system-tag {
+            display: inline-block;
+            background: rgba(91, 141, 190, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .treatment {
+            background: rgba(91, 141, 190, 0.05);
+            padding: 8px;
+            border-left: 2px solid var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* PEDIATRIC CALCULATOR */
+        .calculator-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .calc-section {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .calc-section h3 {
+            font-family: var(--font-secondary);
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--text-primary);
+            font-size: 1em;
+            font-family: var(--font-primary);
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 141, 190, 0.1);
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .calc-button {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-primary);
+            width: 100%;
+        }
+        
+        .calc-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 141, 190, 0.3);
+        }
+        
+        .result-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--font-secondary);
+        }
+        
+        .result-unit {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .medication-list {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0;
+            margin-top: 20px;
+        }
+        
+        .medication-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .medication-item:last-child {
+            border-bottom: none;
+        }
+        
+        .med-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .med-dose {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+            font-size: 1.1em;
+        }
+        
+        footer {
+            background: var(--surface-alt);
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .tab-navigation {
+                overflow-x: auto;
+            }
+            
+            .tab-btn {
+                min-width: 120px;
+                padding: 14px 15px;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .medication-item {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 1.4em;
+            }
+            
+            main {
+                padding: 15px 10px;
+            }
+            
+            .tab-btn {
+                font-size: 0.85em;
+                padding: 12px 10px;
+            }
+            
+            .result-value {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💊 Quick Community Rx</h1>
+            <p>Pharmacy Reference & Pediatric Calculator</p>
+            <p class="subtitle">ทั่วไปการใช้ยาในเวชปฏิบัติ | Multi-tool Pharmacy Platform</p>
+        </header>
+        
+        <!-- TAB NAVIGATION -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="reference">📚 Drug Reference</button>
+            <button class="tab-btn" data-tab="pediatric">👶 Pediatric Calculator</button>
+        </nav>
+        
+        <main>
+            <!-- TAB 1: DRUG REFERENCE -->
+            <div id="reference" class="tab-content active">
+                <div class="controls">
+                    <div class="search-section">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search condition or medication (e.g., 'dry eyes', 'antibiotic', 'ตาแห้ง')">
+                        </div>
+                    </div>
+                    
+                    <div class="view-controls">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="kanban">📊 Kanban View</button>
+                            <button class="view-btn" data-view="table">📋 Table View</button>
+                        </div>
+                        
+                        <div class="filter-section" id="filterSection">
+                            <button class="filter-btn active" data-filter="all">All Conditions</button>
+                            <button class="filter-btn" data-filter="Eye">👁️ Eye</button>
+                            <button class="filter-btn" data-filter="Ear">👂 Ear</button>
+                            <button class="filter-btn" data-filter="Respiratory">🫁 Respiratory</button>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        Showing <span id="visibleCount">10</span> of <span id="totalCount">10</span> conditions
+                    </div>
+                </div>
+                
+                <!-- KANBAN VIEW -->
+                <div class="kanban-board" id="kanbanBoard"></div>
+                
+                <!-- TABLE VIEW -->
+                <div class="table-wrapper" id="tableWrapper" style="display: none;">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Condition</th>
+                                <th>System</th>
+                                <th>1st Line Treatment</th>
+                                <th>2nd Line Treatment</th>
+                                <th>Clinical Presentation</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                
+                <div class="no-results" id="noResults" style="display: none;">
+                    No conditions found matching your search.
+                </div>
+            </div>
+            
+            <!-- TAB 2: PEDIATRIC CALCULATOR -->
+            <div id="pediatric" class="tab-content">
+                <div class="calculator-container">
+                    <!-- Weight-based Dosing -->
+                    <div class="calc-section">
+                        <h3>⚖️ Weight-Based Dosing Calculator</h3>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Child's Weight (kg)</label>
+                                <input type="number" id="childWeight" placeholder="e.g., 25" step="0.1">
+                            </div>
+                            <div class="input-group">
+                                <label>Dose per kg (mg/kg)</label>
+                                <input type="number" id="dosePerKg" placeholder="e.g., 15" step="0.1">
+                            </div>
+                        </div>
+                        <button class="calc-button" onclick="calculateWeightBased()">Calculate Dose</button>
+                        <div class="result-box" id="weightResult">
+                            <div class="result-label">Total Dose</div>
+                            <div class="result-value" id="weightDoseValue">—</div>
+                            <div class="result-unit">mg per dose</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Age-based Dosing -->
+                    <div class="calc-section">
+                        <h3>🎂 Age-Based Dosing Quick Reference</h3>
+                        <div class="input-group">
+                            <label>Child's Age</label>
+                            <select id="childAge">
+                                <option value="">Select age group</option>
+                                <option value="0-1">0-1 years</option>
+                                <option value="1-3">1-3 years</option>
+                                <option value="3-6">3-6 years</option>
+                                <option value="6-12">6-12 years</option>
+                                <option value="12-18">12-18 years</option>
+                            </select>
+                        </div>
+                        
+                        <div class="medication-list" id="ageBasedList">
+                            <div style="padding: 20px; text-align: center; color: var(--text-light);">
+                                Select an age group to see medication dosing
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Common Pediatric Medications -->
+                    <div class="calc-section">
+                        <h3>💊 Common Pediatric Medications & Dosing</h3>
+                        <div class="medication-list">
+                            <div class="medication-item">
+                                <div>
+                                    <div class="med-name">Paracetamol (Acetaminophen)</div>
+                                    <div class="med-dose">10-15 mg/kg every 4-6 hours, max 5 doses/day</div>
+                                </div>
+                                <div>
+                                    <div class="med-name">Ibuprofen</div>
+                                    <div class="med-dose">5-10 mg/kg every 6-8 hours, max 40 mg/kg/day</div>
+                                </div>
+                            </div>
+                            <div class="medication-item">
+                                <div>
+                                    <div class="med-name">Amoxicillin</div>
+                                    <div class="med-dose">20-50 mg/kg/day divided into 3 doses</div>
+                                </div>
+                                <div>
+                                    <div class="med-name">Cephalexin</div>
+                                    <div class="med-dose">25-50 mg/kg/day divided into 4 doses</div>
+                                </div>
+                            </div>
+                            <div class="medication-item">
+                                <div>
+                                    <div class="med-name">Loratadine</div>
+                                    <div class="med-dose">0.2 mg/kg/day (< 30 kg: 5mg daily)</div>
+                                </div>
+                                <div>
+                                    <div class="med-name">Omeprazole</div>
+                                    <div class="med-dose">0.7-3.3 mg/kg/day once daily</div>
+                                </div>
+                            </div>
+                            <div class="medication-item">
+                                <div>
+                                    <div class="med-name">Metoclopramide</div>
+                                    <div class="med-dose">0.1-0.15 mg/kg per dose, 3-4 times daily</div>
+                                </div>
+                                <div>
+                                    <div class="med-name">Domperidone</div>
+                                    <div class="med-dose">0.3-0.4 mg/kg per dose, 3-4 times daily</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(193, 115, 115, 0.1); border: 1px solid var(--error); border-radius: 10px; padding: 20px; margin-top: 25px; text-align: center;">
+                        <p style="color: var(--error); font-weight: 600; margin-bottom: 10px;">⚠️ IMPORTANT DISCLAIMER</p>
+                        <p style="color: var(--text-secondary); font-size: 0.95em;">
+                            This calculator is for educational reference only. Always verify dosing with current pediatric guidelines, consult healthcare professionals, and refer to the patient's actual weight and medication package inserts before administration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>📚 Medical Reference for Community Pharmacy Practice</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">
+                ⚠️ Educational reference guide. Always follow current clinical guidelines and professional standards.
+            </p>
+            <div style="margin-top: 10px; color: var(--text-light);">
+                Last updated: <span id="lastUpdate"></span>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // DATA
+        const conditions = [
+            { condition: "ตาแห้ง (Dry eyes)", system: "Eye", firstLine: "น้ำตาเทียม หยด BID-QID", secondLine: "", presentation: "ระคายเคืองตา", remarks: "- น้ำตาเทียมรายเดือน เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา" },
+            { condition: "เยื่อบุตาอักเสบจากอาการแพ้ (Allergic conjunctivitis)", system: "Eye", firstLine: "Hista-Oph 1 หยด QID", secondLine: "น้ำตาเทียม หยด BID-QID", presentation: "ตาแดง คันตา น้ำตาไหล ไม่เจ็บตา", remarks: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม" },
+            { condition: "เยื่อบุตาอักเสบจากไวรัส (Viral conjunctivitis)", system: "Eye", firstLine: "Hista-Oph 1 หยด QID", secondLine: "น้ำตาเทียม หยด BID-QID", presentation: "ตาแดง คันตา เจ็บตาบ้าง เหมือนมีอะไรเข้าตา", remarks: "- เลี่ยงการให้ topical steroid\n- ประคบเย็นช่วยลดอาการ\n- หายได้เองใน 2 สัปดาห์" },
+            { condition: "เยื่อบุตาอักเสบจากแบคทีเรีย (Bacterial conjunctivitis)", system: "Eye", firstLine: "Poly-oph 1 หยด QID (5-7 วัน)", secondLine: "", presentation: "ตาแดง มีขี้ตาข้นเป็นหนอง เจ็บตา", remarks: "- โอกาสหายเองต่ำ จึงต้องใช้ยาฆ่าเชื้อต่อเนื่อง" },
+            { condition: "ตากุ้งยิง - Localized (Stye)", system: "Eye", firstLine: "Poly-oph 1 หยด QID (5-7 วัน)", secondLine: "Terramycin ointment ป้ายตา (5-7 วัน)", presentation: "มีตุ่มหนองที่เปลือกตา เจ็บตา บวมแดง", remarks: "- ประคบอุ่นช่วยลดอาการและทำให้หายเร็วขึ้น" },
+            { condition: "ตากุ้งยิง - Systemic (Stye)", system: "Eye", firstLine: "Dicloxacillin 250-500 mg QID ac (5-7 วัน)", secondLine: "", presentation: "มีตุ่มหนองที่เปลือกตา เจ็บตา มีไข้สูง", remarks: "- ต้องกินยาฆ่าเชื้อต่อเนื่องจนหมด เพื่อไม่ให้ดื้อยา" },
+            { condition: "ขี้หูอุดตัน (Cerumen impaction)", system: "Ear", firstLine: "Docusate sodium (DeWax) 5-10 หยด (ค้างไว้ 15 นาที)", secondLine: "", presentation: "หูอื้อ ได้ยินเสียงลดลง", remarks: "- ใช้ลูกยางบีบน้ำอุ่นล้างรูหูภายหลังจากหยอดยา" },
+            { condition: "หูชั้นนอกอักเสบจากแบคทีเรีย (Bacterial otitis externa)", system: "Ear", firstLine: "Poly-oph 1 หยด QID (7 วัน)", secondLine: "", presentation: "ปวดหูมากเมื่อดึงใบหู อาจมีของเหลวไหลออก", remarks: "" },
+            { condition: "หูชั้นนอกอักเสบจากเชื้อรา (Fungal otitis externa)", system: "Ear", firstLine: "Clotrimazole 1% solution 4 หยด QID (7 วัน)", secondLine: "", presentation: "คันรูหูมาก หูอื้อ ปวดหู", remarks: "" },
+            { condition: "หูชั้นกลางอักเสบ - Mild (Otitis media)", system: "Respiratory", firstLine: "Paracetamol prn หรือ Ibuprofen 400 mg TID pc", secondLine: "Amoxicillin 1000 mg BID pc (5-7 วัน)", presentation: "ปวดหู หูอื้อ", remarks: "" }
+        ];
+        
+        let filteredConditions = [...conditions];
+        let currentView = 'kanban';
+        let currentFilter = 'all';
+        const systems = [...new Set(conditions.map(c => c.system))];
+        
+        // TAB NAVIGATION
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const tabId = btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // KANBAN & TABLE RENDERING
+        function groupBySystem(data) {
+            const grouped = {};
+            systems.forEach(sys => {
+                grouped[sys] = data.filter(item => item.system === sys);
+            });
+            return grouped;
+        }
+        
+        function createCard(item) {
+            return `
+                <div class="condition-card ${item.system.toLowerCase()}">
+                    <div class="card-title">${item.condition}</div>
+                    <div class="card-section">
+                        <div class="card-label">Presentation</div>
+                        <div class="presentation-text">${item.presentation}</div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">1st Line</div>
+                        <div class="treatment-badge">${item.firstLine}</div>
+                    </div>
+                    ${item.secondLine ? `
+                    <div class="card-section">
+                        <div class="card-label">2nd Line</div>
+                        <div class="treatment-badge">${item.secondLine}</div>
+                    </div>
+                    ` : ''}
+                    ${item.remarks ? `
+                    <div class="card-section">
+                        <div class="card-label">Notes</div>
+                        <div class="remarks-text">${item.remarks.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        function renderKanban(data) {
+            const board = document.getElementById('kanbanBoard');
+            const grouped = groupBySystem(data);
+            let html = '';
+            systems.forEach(system => {
+                const systemConditions = grouped[system];
+                const emoji = { 'Eye': '👁️', 'Ear': '👂', 'Respiratory': '🫁' }[system] || '📋';
+                html += `
+                    <div class="system-column">
+                        <div class="system-header">
+                            ${emoji} ${system}
+                            <span class="system-count">${systemConditions.length}</span>
+                        </div>
+                        <div class="cards-container">
+                            ${systemConditions.length > 0 
+                                ? systemConditions.map(item => createCard(item)).join('')
+                                : '<div class="empty-column">No conditions</div>'
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            board.innerHTML = html;
+        }
+        
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><div class="condition-name">${item.condition}</div></td>
+                    <td><span class="system-tag">${item.system}</span></td>
+                    <td><div class="treatment">${item.firstLine}</div></td>
+                    <td><div class="treatment">${item.secondLine || '—'}</div></td>
+                    <td>${item.presentation}</td>
+                    <td><div class="remarks">${item.remarks.replace(/\n/g, '<br>')}</div></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function updateDisplay(data) {
+            document.getElementById('visibleCount').textContent = data.length;
+            document.getElementById('totalCount').textContent = conditions.length;
+            
+            if (data.length === 0) {
+                document.getElementById('kanbanBoard').style.display = 'none';
+                document.getElementById('tableWrapper').style.display = 'none';
+                document.getElementById('noResults').style.display = 'block';
+            } else {
+                document.getElementById('noResults').style.display = 'none';
+                if (currentView === 'kanban') {
+                    renderKanban(data);
+                    document.getElementById('kanbanBoard').style.display = 'grid';
+                    document.getElementById('tableWrapper').style.display = 'none';
+                } else {
+                    renderTable(data);
+                    document.getElementById('tableWrapper').style.display = 'block';
+                    document.getElementById('kanbanBoard').style.display = 'none';
+                }
+            }
+        }
+        
+        // SEARCH
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            const query = e.target.value.toLowerCase();
+            filteredConditions = conditions.filter(item => 
+                item.condition.toLowerCase().includes(query) ||
+                item.firstLine.toLowerCase().includes(query) ||
+                item.secondLine.toLowerCase().includes(query)
+            );
+            applyFilter();
+        });
+        
+        // VIEW TOGGLE
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentView = e.target.dataset.view;
+                applyFilter();
+            });
+        });
+        
+        // FILTER
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                applyFilter();
+            });
+        });
+        
+        function applyFilter() {
+            let result = [...filteredConditions];
+            if (currentFilter !== 'all') {
+                result = result.filter(item => item.system === currentFilter);
+            }
+            updateDisplay(result);
+        }
+        
+        // PEDIATRIC CALCULATOR
+        function calculateWeightBased() {
+            const weight = parseFloat(document.getElementById('childWeight').value);
+            const dosePerKg = parseFloat(document.getElementById('dosePerKg').value);
+            
+            if (weight && dosePerKg) {
+                const totalDose = (weight * dosePerKg).toFixed(1);
+                document.getElementById('weightDoseValue').textContent = totalDose;
+                document.getElementById('weightResult').classList.add('show');
+            }
+        }
+        
+        document.getElementById('childAge').addEventListener('change', (e) => {
+            const age = e.target.value;
+            const listDiv = document.getElementById('ageBasedList');
+            
+            const ageBasedMeds = {
+                '0-1': [
+                    { name: 'Paracetamol', dose: '10-15 mg/kg every 4-6 hours' },
+                    { name: 'Ibuprofen', dose: 'Not recommended < 6 months' },
+                    { name: 'Amoxicillin', dose: '10-30 mg/kg/day in divided doses' }
+                ],
+                '1-3': [
+                    { name: 'Paracetamol', dose: '15 mg/kg per dose, max 5 doses/day' },
+                    { name: 'Ibuprofen', dose: '5-10 mg/kg every 6-8 hours' },
+                    { name: 'Loratadine', dose: '1 mg/kg/day or 5mg daily' }
+                ],
+                '3-6': [
+                    { name: 'Paracetamol', dose: '15 mg/kg per dose, max 5 doses/day' },
+                    { name: 'Ibuprofen', dose: '5-10 mg/kg every 6-8 hours' },
+                    { name: 'Amoxicillin', dose: '20-40 mg/kg/day in 3 divided doses' }
+                ],
+                '6-12': [
+                    { name: 'Paracetamol', dose: '15 mg/kg per dose, max 5 doses/day' },
+                    { name: 'Ibuprofen', dose: '10 mg/kg every 6-8 hours' },
+                    { name: 'Loratadine', dose: '5-10 mg daily' }
+                ],
+                '12-18': [
+                    { name: 'Paracetamol', dose: '325-650 mg per dose' },
+                    { name: 'Ibuprofen', dose: '200-400 mg every 6-8 hours' },
+                    { name: 'Loratadine', dose: '10 mg daily' }
+                ]
+            };
+            
+            if (age && ageBasedMeds[age]) {
+                const meds = ageBasedMeds[age];
+                let html = '';
+                meds.forEach(med => {
+                    html += `
+                        <div class="medication-item">
+                            <div>
+                                <div class="med-name">${med.name}</div>
+                                <div class="med-dose">${med.dose}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                listDiv.innerHTML = html;
+            }
+        });
+        
+        // INITIALIZE
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        updateDisplay(conditions);
+    </script>
+</body>
+</html>
