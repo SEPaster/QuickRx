@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickRx - All about ร้านยา</title>
+    <style>
+        :root {
+            /* Palette mapped directly from image_d1dd23.png */
+            --color-cream: #EFECE3;      
+            --color-light-blue: #92B2DE; 
+            --color-slate-blue: #4775AE; 
+            --color-black: #000000;      
+            
+            /* Modern UI System Tokens */
+            --bg-app: #FDFDFB;
+            --bg-surface: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #4A4A4A;
+            --text-muted: #767676;
+            --border-subtle: rgba(0, 0, 0, 0.07);
+            --border-focus: var(--color-slate-blue);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-pill: 9999px;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+            
+            --danger-bg: #FFF5F5;
+            --danger-text: #C53030;
+            --danger-border: #FEB2B2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* Prevent horizontal page shaking on mobile devices */
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Modernized Minimalist Header */
+        header {
+            background: linear-gradient(135deg, var(--color-black) 0%, #1A1A1A 100%);
+            color: #FFFFFF;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-cream), var(--color-light-blue), var(--color-slate-blue));
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: var(--color-light-blue);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+            margin-top: -24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Modern Capsule Tab Selector Container */
+        .tabs-navigation-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+            width: 100%;
+            overflow-x: auto; /* Allow horizontal scrolling on mobile tabs if elements crowd */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs-nav {
+            display: inline-flex;
+            background-color: var(--color-cream);
+            border-radius: var(--radius-pill);
+            padding: 6px;
+            gap: 4px;
+            box-shadow: var(--shadow-sm);
+            max-width: 100%;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-pill);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-black);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .tab-btn.active {
+            background-color: var(--bg-surface);
+            color: var(--color-black);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* High-Visibility Live Search Dashboard Component */
+        .search-wrapper {
+            max-width: 600px;
+            margin: 0 auto 32px auto;
+            position: relative;
+            animation: fadeIn 0.4s ease;
+            width: 100%;
+        }
+
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-control {
+            width: 100%;
+            padding: 16px 100px 16px 48px; /* Extra padding right to make room for counter label */
+            border: 1.5px solid var(--color-cream);
+            border-radius: var(--radius-pill);
+            font-size: 1rem;
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
+        }
+
+        .search-control:focus {
+            outline: none;
+            border-color: var(--color-slate-blue);
+            background-color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(71, 117, 174, 0.12);
+        }
+
+        .search-counter {
+            position: absolute;
+            right: 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-slate-blue);
+            background-color: rgba(146, 178, 222, 0.15);
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px dashed var(--color-light-blue);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sleek Modern Table Architecture */
+        .table-responsive {
+            overflow-x: auto; /* Isolates layout changes, letting large table structure scroll internally without breaking screen width */
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #F8F7F4;
+            color: var(--color-black);
+            padding: 18px 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            text-
