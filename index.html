@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Quick Community Rx - Pharmacy Reference & Pediatric Calculator | ร้านยา</title>
+    <meta name="description" content="Comprehensive pharmacy reference guide with pediatric dosing calculator. Bilingual Thai-English medical reference for community pharmacy practice.">
+    <meta name="keywords" content="pharmacy, medication, pediatric calculator, dose calculator, clinical reference, ร้านยา">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #D1E5F4;
+            --primary-light: #E8F2F9;
+            --primary-dark: #A8CEDB;
+            --background: linear-gradient(135deg, #D1E5F4 0%, #C5DDF0 100%);
+            --surface: #FFFFFF;
+            --surface-alt: #F0F6FB;
+            --text-primary: #1F3A52;
+            --text-secondary: #1F3A52;
+            --text-light: #1F3A52;
+            --border: #D1E5F4;
+            --success: #5A9B6F;
+            --warning: #C89F6F;
+            --error: #B85C5C;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(91, 141, 190, 0.12);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-family: var(--font-secondary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1A3248;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin: 5px 0;
+            color: #2C4A63;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            gap: 0;
+            background: var(--surface-alt);
+            padding: 0;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            min-width: 150px;
+            font-family: var(--font-primary);
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(91, 141, 190, 0.05);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(91, 141, 190, 0.08);
+        }
+        
+        main {
+            padding: 30px 20px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-alt);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(91, 141, 190, 0.1);
+        }
+        
+        .search-box::after {
+            content: '🔍';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .view-btn {
+            padding: 10px 18px;
+            border: 2px solid var(--border);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-family: var(--font-primary);
+        }
+        
+        .view-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            font-weight: 500;
+            font-family: var(--font-primary);
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .table-wrapper.hidden {
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--surface-alt);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95em;
+            border-right: 1px solid var(--border);
+        }
+        
+        th:last-child {
+            border-right: none;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: var(--surface-alt);
+        }
+        
+        td {
+            padding: 12px;
+            font-size: 0.95em;
+            border-right: 1px solid var(--border);
+        }
+        
+        td:last-child {
+            border-right: none;
+        }
+        
+        /* PEDIATRIC CALCULATOR STYLES */
+        .calculator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .calc-section {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .calc-section h3 {
+            font-family: var(--font-secondary);
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--text-primary);
+            font-size: 1em;
+            font-family: var(--font-primary);
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 141, 190, 0.1);
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .calc-button {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-primary);
+            width: 100%;
+        }
+        
+        .calc-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 141, 190, 0.3);
+        }
+        
+        .result-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--font-secondary);
+        }
+        
+        .result-unit {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .medication-table {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .medication-table table {
+            width: 100%;
+        }
+        
+        .medication-table th {
+            background: var(--surface-alt);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .medication-table td {
+            padding: 15px;
+        }
+        
+        .medication-table tbody tr:nth-child(even) {
+            background: var(--surface-alt);
+        }
+        
+        .medication-table tbody tr:hover {
+            background: rgba(91, 141, 190, 0.08);
+        }
+        
+        .med-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .med-dosage {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+        
+        .blank-data {
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        .disclaimer-box {
+            background: rgba(193, 115, 115, 0.1);
+            border: 1px solid var(--error);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .disclaimer-box p {
+            color: var(--error);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .disclaimer-box p:last-child {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        
+        footer {
+            background: var(--surface-alt);
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-wrapper {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💊 Quick Community Rx</h1>
+            <p>Pharmacy Reference & Pediatric Calculator</p>
+            <p style="font-size: 0.9em; opacity: 0.85; margin-top: 10px;">ร้านยา | Community Pharmacy Reference Guide</p>
+        </header>
+        
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="reference">📚 Drug Reference</button>
+            <button class="tab-btn" data-tab="pediatric">👶 Pediatric Dosing</button>
+        </nav>
+        
+        <main>
+            <!-- TAB 1: DRUG REFERENCE -->
+            <div id="reference" class="tab-content active">
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="ค้นหาสภาพพยาธิ หรือยา (Search condition or medication)">
+                    </div>
+                    
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="table">📋 Table View</button>
+                            <button class="view-btn" data-view="search">🔍 Search View</button>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span> conditions
+                    </div>
+                </div>
+                
+                <!-- TABLE VIEW -->
+                <div class="table-wrapper" id="tableWrapper">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Disorders</th>
+                                <th>System</th>
+                                <th>1st line</th>
+                                <th>2nd line</th>
+                                <th>Remarks ยา</th>
+                                <th>Alternative line</th>
+                                <th>Clinical presentation</th>
+                                <th>Remarks โรค</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- TAB 2: PEDIATRIC CALCULATOR -->
+            <div id="pediatric" class="tab-content">
+                <div class="calculator-container">
+                    <!-- Weight-Based Dosing -->
+                    <div class="calc-section">
+                        <h3>⚖️ Weight-Based Dosing Calculator</h3>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Child's Weight (kg)</label>
+                                <input type="number" id="childWeight" placeholder="e.g., 20" step="0.1">
+                            </div>
+                            <div class="input-group">
+                                <label>Dose per kg (mg/kg)</label>
+                                <input type="number" id="dosePerKg" placeholder="e.g., 15" step="0.1">
+                            </div>
+                        </div>
+                        <button class="calc-button" onclick="calculateWeightBased()">Calculate Dose</button>
+                        <div class="result-box" id="weightResult">
+                            <div class="result-label">Total Dose</div>
+                            <div class="result-value" id="weightDoseValue">—</div>
+                            <div class="result-unit">mg per dose</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Medication-Specific Dosing -->
+                    <div class="calc-section">
+                        <h3>💊 Pediatric Medication Dosing Reference</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">Select a medication and enter child's weight to calculate appropriate dose</p>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Select Medication</label>
+                                <select id="medicationSelect" onchange="updateMedicationDosing()">
+                                    <option value="">-- Select medication --</option>
+                                    <option value="azithromycin">Azithromycin 200 mg/5mL</option>
+                                    <option value="amoxicillin250">Amoxicillin 250 mg/5mL</option>
+                                    <option value="amoxicillin125">Amoxicillin 125 mg/5mL</option>
+                                    <option value="paracetamol120">Paracetamol 120 mg/5mL</option>
+                                    <option value="paracetamol160">Paracetamol 160 mg/5mL</option>
+                                    <option value="paracetamol250">Paracetamol 250 mg/5mL</option>
+                                    <option value="bromhexine">Bromhexine 4 mg/5mL</option>
+                                    <option value="levodropropizine">Levodropropizine 30 mg/5mL</option>
+                                    <option value="ibuprofen">Ibuprofen 100 mg/5mL</option>
+                                    <option value="desloratadine">Desloratadine 0.5 mg/mL</option>
+                                    <option value="cetirizine">Cetirizine 1 mg/mL</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Child's Weight (kg)</label>
+                                <input type="number" id="medWeight" placeholder="e.g., 20" step="0.1" onchange="updateMedicationDosing()">
+                            </div>
+                        </div>
+                        
+                        <!-- Medication Information Display -->
+                        <div id="medicationInfo" style="margin-top: 20px;">
+                            <p style="color: var(--text-light); text-align: center; padding: 20px;">Select a medication to view dosing information</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Comprehensive Medication Reference Table -->
+                    <div class="calc-section">
+                        <h3>📋 Complete Pediatric Medication Reference</h3>
+                        <div class="medication-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Medication & Formulation</th>
+                                        <th>Pediatric Dosing</th>
+                                        <th>Age-Based Guidelines (if applicable)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="med-name">Azithromycin 200 mg/5mL</td>
+                                        <td class="med-dosage">10 mg/kg as loading dose, then 5 mg/kg/day for 4 days</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Amoxicillin 250 mg/5mL</td>
+                                        <td class="med-dosage">20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Amoxicillin 125 mg/5mL</td>
+                                        <td class="med-dosage">20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Paracetamol 120 mg/5mL</td>
+                                        <td class="med-dosage">10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Paracetamol 160 mg/5mL</td>
+                                        <td class="med-dosage">10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Paracetamol 250 mg/5mL</td>
+                                        <td class="med-dosage">10-15 mg/kg per dose every 4-6 hours, max 5 doses per day</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Bromhexine 4 mg/5mL</td>
+                                        <td class="med-dosage">0.4-0.8 mg/kg/day in divided doses</td>
+                                        <td><span class="blank-data">No reliable pediatric data available</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Levodropropizine 30 mg/5mL</td>
+                                        <td class="med-dosage">1.5-2 mg/kg per dose TID-QID</td>
+                                        <td><span class="blank-data">No reliable pediatric data available</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Ibuprofen 100 mg/5mL</td>
+                                        <td class="med-dosage">5-10 mg/kg per dose every 6-8 hours, max 40 mg/kg/day</td>
+                                        <td><span class="blank-data">See weight-based dosing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Desloratadine 0.5 mg/mL</td>
+                                        <td class="med-dosage">Weight-based: 0.125-0.25 mg/kg/day</td>
+                                        <td>6-11 months: Not well-established | 1-5 years: 1 mg OD | >6 years: 2.5 mg OD</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="med-name">Cetirizine 1 mg/mL</td>
+                                        <td class="med-dosage">0.25 mg/kg BID or 0.5 mg/kg OD</td>
+                                        <td>6-23 months: 2.5 mg OD | 2-5 years: 2.5 mg OD or BID | >6 years: 5-10 mg OD</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="disclaimer-box">
+                        <p>⚠️ IMPORTANT DISCLAIMER</p>
+                        <p>This calculator is for educational reference only. Always verify dosing with current pediatric guidelines, consult healthcare professionals, and refer to the patient's actual weight and medication package inserts before administration. Data marked as "No reliable pediatric data available" should not be used without professional guidance.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>📚 Quick Community Rx - Pharmacy Reference for Community Pharmacy Practice</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">
+                ⚠️ Educational reference guide. Always follow current clinical guidelines and professional standards.
+            </p>
+            <div style="margin-top: 10px; color: var(--text-light);">
+                Last updated: <span id="lastUpdate"></span>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // ORIGINAL PHARMACY DATA - ALL CONTENT PRESERVED
+        const conditionsData = [
+            { disorder: "ตาแห้ง (Dry eyes)", system: "Eye", firstLine: "น้ำตาเทียม หยด BID-QID", secondLine: "", remarks: "- น้ำตาเทียมรายเดือน เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา", alternative: "", presentation: "ระคายเคืองตา", remarksDisease: "- หากหยอดต่อเนื่องเป็นเวลานาน แนะนำแบบรายวัน เนื่องจากไม่มีสารกันเสีย" },
+            { disorder: "เยื่อบุตาอักเสบจากอาการแพ้ (Allergic conjunctivitis)", system: "Eye", firstLine: "Hista-Oph 1 หยด QID", secondLine: "น้ำตาเทียม หยด BID-QID", remarks: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา\n- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม", alternative: "", presentation: "ตาแดง คันตา น้ำตาไหล มักไม่เจ็บตา", remarksDisease: "- เลี่ยงสารก่อแพ้\n- ประคบเย็นช่วยลดอาการได้" },
+            { disorder: "เยื่อยุตาอักเสบจากไวรัส (Viral conjunctivitis)", system: "Eye", firstLine: "Hista-Oph 1 หยด QID", secondLine: "น้ำตาเทียม หยด BID-QID", remarks: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา\n- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม\n- เลี่ยงการให้ topical steroid เนื่องจากทำให้อาการแย่ลงได้", alternative: "", presentation: "ตาแดง คัันตา เจ็บตาบ้าง เหมือนมีอะไรเข้าตา", remarksDisease: "- เลี่ยงการใช้ของร่วมกับผู้อื่น/ งดว่ายน้ำ 2 สัปดาห์\n- ประคบเย็นช่วยลดอาการได้\n- หายได้เองใน 2 สัปดาห์ การหยอดตาจะช่วยลดอาการและทำให้สบายตาขึ้น" },
+            { disorder: "เยื่อบุตาอักเสบจากแบคทีเรีย (Bacterial conjunctivitis)", system: "Eye", firstLine: "Poly-oph 1 หยด QID (นาน 5-7 วัน)", secondLine: "", remarks: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา", alternative: "", presentation: "ตาแดง มีขี้ตาข้นเป็นหนอง เจ็บตา", remarksDisease: "- โอกาสหายเองต่ำ จึงต้องใช้ยาฆ่าเชื้อต่อเนื่อง" },
+            { disorder: "ตากุ้งยิง (Stye)_มีอาการเฉพาะที่เท่านั้น", system: "Eye", firstLine: "Poly-oph 1 หยด QID (นาน 5-7 วัน)", secondLine: "Terramycin ointment ป้ายตา (นาน 5-7 วัน)", remarks: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น\n- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา\n- หยอด Poly-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม\n- หยอดน้ำตาเทียมก่อน เว้น 15 นาที แล้วค่อยป้ายผึ้ง", alternative: "", presentation: "มีตุ่มหนองที่เปลือกตา เจ็บตา ตุ่มมีความบวมแดง", remarksDisease: "- ประคบอุ่นช่วยลดอาการและทำให้หายเร็วขึ้นได้" },
+            { disorder: "ตากุ้งยิง (Stye)_มีอาการทาง systemic ด้วย", system: "Eye", firstLine: "Dicloxacillin 500 mg QID ac (นาน 5-7 วัน)", secondLine: "", remarks: "- แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)", alternative: "", presentation: "มีตุ่มหนองที่เปลือกตา เจ็บตา ตุ่มมีความบวมแดง และมีไข้สูง", remarksDisease: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorder: "ขี้หูอุดตัน", system: "Ear", firstLine: "Docusate sodium (DeWax) หยอดเข้ารูหู 5-10 หยด (ค้างไว้นาน 15 นาที)", secondLine: "", remarks: "- ใช้ลูกยางบีบน้ำอุ่นล้างรูหู ภายหลังจากหยอดยา", alternative: "", presentation: "หูอื้อ ได้ยินเสียงลดลง", remarksDisease: "" },
+            { disorder: "หูชั้นนอกอักเสบจากแบคทีเรีย (Bacterial otitis externa)", system: "Ear", firstLine: "Poly-oph 1 หยด QID (นาน 7 วัน)", secondLine: "", remarks: "", alternative: "", presentation: "ปวดหูมากเมื่อดึงหรือกดใบหู อาจมีของเหลวไหลออกจากรูหู", remarksDisease: "" },
+            { disorder: "หูชั้นนอกอักเสบจากเชื้อรา (Fungal otitis externa)", system: "Ear", firstLine: "Clotrimazole 1% solution 4 หยด QID (นาน 7 วัน)", secondLine: "", remarks: "", alternative: "", presentation: "คันรูหูมาก หูอื้อ ปวดหู อาจมีของเหลวไหลออกจากรูหู", remarksDisease: "" },
+            { disorder: "หูชั้นกลางอักเสบ (Otitis media) อาการไม่รุนแรง", system: "Respiratory", firstLine: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", secondLine: "Amoxicillin 1000 mg BID pc (นาน 5-7 วัน)", remarks: "- แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)\n- Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง มี 6 แคปซูล)", alternative: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc (นาน 3 วัน)", presentation: "ปวดหู หูอื้อ เมื่อดึงหรือกดใบหูจะไม่เจ็บกว่าเดิม", remarksDisease: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorder: "หูชั้นกลางอักเสบ (Severe otitis media) อาการรุนแรง มีไข้สูง", system: "Respiratory", firstLine: "Amoxicillin-Clavulanic acid 1 g BID pc (นาน 5-7 วัน)", secondLine: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc (นาน 3 วัน)", remarks: "- Augmentin (กินติดต่อกัน 7 วัน หยิบ 1 กล่องให้ครบ 14 เม็ด)\n- Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง มี 6 แคปซูล)", alternative: "", presentation: "ปวดหู หูอื้อ เมื่อดึงหรือกดใบหูจะไม่เจ็บกว่าเดิม มีไข้สูงร่วมด้วย", remarksDisease: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" },
+            { disorder: "จมูกอักเสบจากภูมิแพ้ไม่รุนแรง (Mild allergic rhinitis)", system: "Respiratory", firstLine: "Cetirizine 10 mg OD pc", secondLine: "ล้างจมูกด้วยน้ำเกลือ", remarks: "- ยาแก้แพ้อาจทำให้ง่วงนอนได้ แต่ส่วนใหญ่มักง่วงน้อย", alternative: "", presentation: "อาการไม่รบกวนชีวิตประจำวันมาก หรือเป็นน้อยกว่า 4 วันต่อสัปดาห์ (Mild intermittent)", remarksDisease: "" },
+            { disorder: "จมูกอักเสบภูมิแพ้รุนแรง (Severe allergic rhinitis)", system: "Respiratory", firstLine: "Mometasone furoate 0.05% พ่นยา 1 พ่นเข้ารูจมูกทั้ง 3 ข้าง วันละ 1 ครั้ง", secondLine: "ล้างจมูกด้วยน้ำเกลือ", remarks: "- พ่นยาสม่ำเสมอ เพื่อให้ผลการรักษามีประสิทธิภาพ เนื่องจากยาใช้เวลาออกฤทธิ์ (หลักสัปดาห์-เดือน)", alternative: "", presentation: "อาการรบกวนชีวิตประจำวันและเป็นถี่กว่า 4 วันต่อสัปดาห์ (Severe persistent)", remarksDisease: "" },
+            { disorder: "ไข้หวัด (Common cold)", system: "Respiratory", firstLine: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID", secondLine: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc", remarks: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง", alternative: "Carbocysteine 500 mg (Solmax) TID pc", presentation: "เจ็บคอ ไอ มีน้ำมูกใส หรือมีน้ำมูกเขียวแค่ช่วงเช้าของวัน", remarksDisease: "- สามารถล้างจมูกเพื่อช่วยลดอาการคัดจมูกได้" },
+            { disorder: "ไข้หวัดใหญ่ (Flu)", system: "Respiratory", firstLine: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", secondLine: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc", remarks: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง", alternative: "Oseltamivir (ต้องไปรับยาที่โรงพยาบาล เมื่อเป็นผู้ป่วยความเสี่ยงสูง)", presentation: "เจ็บคอ ปวดเมื่อยตามตัว ไข้สูง", remarksDisease: "" },
+            { disorder: "คอหอยอักเสบจากไวรัส (Viral pharyngitis)", system: "Respiratory", firstLine: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID", secondLine: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc", remarks: "", alternative: "", presentation: "เจ็บคอ", remarksDisease: "" },
+            { disorder: "คอหอยอักเสบจากแบคทีเรีย (GAS pharyngitis)", system: "Respiratory", firstLine: "Amoxicillin 500 mg BID pc (นาน 10 วัน)", secondLine: "กรณีแพ้ penicillin = Azithromycin 500 mg OD pc (นาน 5 วัน)", remarks: "- แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 10 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล)\n- Zithromax (กินติดต่อกัน 5 วัน หยิบ 2 กล่อง มี 12 แคปซูล)", alternative: "", presentation: "เจ็บคอ ต่อมน้ำเหลืองข้างหูโต น้ำมูกและเสมหะสีเขียวทั้งวัน และมีตุ่มหนองเมื่อส่องดูภายในลำคอ", remarksDisease: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา" }
+        ];
+
+        let allConditions = [...conditionsData];
+        let filteredConditions = [...conditionsData];
+        let currentView = 'table';
+        
+        // Initialize
+        function init() {
+            document.getElementById('totalCount').textContent = allConditions.length;
+            renderTable(allConditions);
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        // Render Table
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.disorder}</td>
+                    <td>${item.system}</td>
+                    <td>${item.firstLine}</td>
+                    <td>${item.secondLine || '—'}</td>
+                    <td>${item.remarks.replace(/\n/g, '<br>')}</td>
+                    <td>${item.alternative || '—'}</td>
+                    <td>${item.presentation}</td>
+                    <td>${item.remarksDisease.replace(/\n/g, '<br>') || '—'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('visibleCount').textContent = data.length;
+        }
+        
+        // Search
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            const query = e.target.value.toLowerCase();
+            filteredConditions = allConditions.filter(item =>
+                item.disorder.toLowerCase().includes(query) ||
+                item.system.toLowerCase().includes(query) ||
+                item.firstLine.toLowerCase().includes(query) ||
+                item.presentation.toLowerCase().includes(query)
+            );
+            renderTable(filteredConditions);
+        });
+        
+        // Tab Navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const tabId = btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Medication Dosing
+        const medicationData = {
+            azithromycin: {
+                name: 'Azithromycin 200 mg/5mL',
+                dosing: '10 mg/kg loading dose, then 5 mg/kg/day for 4 days',
+                calculation: 'Weight × 10 = loading dose (mg); Weight × 5 = daily dose (mg)'
+            },
+            amoxicillin250: {
+                name: 'Amoxicillin 250 mg/5mL',
+                dosing: '20-45 mg/kg/day divided TID (6.7-15 mg/kg per dose)',
+                calculation: 'Weight × 6.7 to 15 = dose per 8 hours (mg)'
+            },
+            amoxicillin125: {
+                name: 'Amoxicillin 125 mg/5mL',
+                dosing: '20-45 mg/kg/day divided TID (6.7-15 mg/kg per dose)',
+                calculation: 'Weight × 6.7 to 15 = dose per 8 hours (mg)'
+            },
+            paracetamol120: {
+                name: 'Paracetamol 120 mg/5mL',
+                dosing: '10-15 mg/kg per dose, every 4-6 hours, max 5 doses/day',
+                calculation: 'Weight × 10 to 15 = per dose (mg); max 5 doses daily'
+            },
+            paracetamol160: {
+                name: 'Paracetamol 160 mg/5mL',
+                dosing: '10-15 mg/kg per dose, every 4-6 hours, max 5 doses/day',
+                calculation: 'Weight × 10 to 15 = per dose (mg); max 5 doses daily'
+            },
+            paracetamol250: {
+                name: 'Paracetamol 250 mg/5mL',
+                dosing: '10-15 mg/kg per dose, every 4-6 hours, max 5 doses/day',
+                calculation: 'Weight × 10 to 15 = per dose (mg); max 5 doses daily'
+            },
+            bromhexine: {
+                name: 'Bromhexine 4 mg/5mL',
+                dosing: '0.4-0.8 mg/kg/day in divided doses',
+                calculation: 'Weight × 0.4 to 0.8 = daily dose (mg); divide by frequency'
+            },
+            levodropropizine: {
+                name: 'Levodropropizine 30 mg/5mL',
+                dosing: '1.5-2 mg/kg per dose TID-QID',
+                calculation: 'Weight × 1.5 to 2 = per dose (mg)'
+            },
+            ibuprofen: {
+                name: 'Ibuprofen 100 mg/5mL',
+                dosing: '5-10 mg/kg per dose every 6-8 hours, max 40 mg/kg/day',
+                calculation: 'Weight × 5 to 10 = per dose (mg); max Weight × 40/day'
+            },
+            desloratadine: {
+                name: 'Desloratadine 0.5 mg/mL',
+                dosing: 'Weight-based: 0.125-0.25 mg/kg/day | Age: 1-5 yrs: 1mg OD | >6 yrs: 2.5mg OD',
+                calculation: 'Weight × 0.125 to 0.25 = daily dose (mg)'
+            },
+            cetirizine: {
+                name: 'Cetirizine 1 mg/mL',
+                dosing: 'Weight-based: 0.25 mg/kg BID or 0.5 mg/kg OD | Age: 2-5 yrs: 2.5mg OD/BID | >6 yrs: 5-10mg OD',
+                calculation: 'Weight × 0.25 = per dose BID (mg) or Weight × 0.5 = OD (mg)'
+            }
+        };
+        
+        function updateMedicationDosing() {
+            const medSelect = document.getElementById('medicationSelect').value;
+            const weight = parseFloat(document.getElementById('medWeight').value);
+            const infoDiv = document.getElementById('medicationInfo');
+            
+            if (!medSelect) {
+                infoDiv.innerHTML = '<p style="color: var(--text-light); text-align: center; padding: 20px;">Select a medication to view dosing information</p>';
+                return;
+            }
+            
+            const med = medicationData[medSelect];
+            let html = `
+                <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">${med.name}</h4>
+                    <div style="margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Dosing:</strong> ${med.dosing}</p>
+                        <p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Calculation:</strong> ${med.calculation}</p>
+                    </div>
+            `;
+            
+            if (weight > 0) {
+                const lowCalc = weight * 5;
+                const highCalc = weight * 15;
+                html += `
+                    <div style="background: var(--surface-alt); padding: 15px; border-radius: 8px; border-left: 3px solid var(--primary);">
+                        <p style="color: var(--primary); font-weight: 600; margin-bottom: 10px;">For ${weight}kg child:</p>
+                        <p style="color: var(--text-secondary); margin: 5px 0;">Typical dose range: ${lowCalc.toFixed(1)} - ${highCalc.toFixed(1)} mg per dose</p>
+                        <p style="color: var(--text-light); font-size: 0.9em; margin-top: 10px; font-style: italic;">* Consult healthcare professional for exact dosing</p>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            infoDiv.innerHTML = html;
+        }
+        
+        function calculateWeightBased() {
+            const weight = parseFloat(document.getElementById('childWeight').value);
+            const dosePerKg = parseFloat(document.getElementById('dosePerKg').value);
+            
+            if (weight && dosePerKg) {
+                const totalDose = (weight * dosePerKg).toFixed(1);
+                document.getElementById('weightDoseValue').textContent = totalDose;
+                document.getElementById('weightResult').classList.add('show');
+            }
+        }
+        
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
