@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickRx - Modern Pharmacy Reference</title>
+    <link rel="icon" type="image/png" href="https://sepaster.github.io/QuickRx/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Modern Blue Theme */
+            --primary-dark: #0F3A7D;
+            --primary: #1B5FD0;
+            --primary-light: #2B7FFF;
+            --accent: #00D4FF;
+            --accent-glow: rgba(0, 212, 255, 0.2);
+            --success: #00C853;
+            --danger: #FF6B6B;
+            --warning: #FFA500;
+            
+            --bg-dark: #0F1419;
+            --bg-app: #F7F9FD;
+            --bg-surface: #FFFFFF;
+            --bg-surface-alt: #F0F4FB;
+            
+            --text-primary: #0F1419;
+            --text-secondary: #5A6B7F;
+            --text-muted: #8A9BB0;
+            
+            --border-light: #D9E2EF;
+            --border-subtle: rgba(27, 95, 208, 0.1);
+            
+            --shadow-sm: 0 2px 8px rgba(15, 58, 125, 0.08);
+            --shadow-md: 0 8px 24px rgba(15, 58, 125, 0.12);
+            --shadow-lg: 0 16px 48px rgba(15, 58, 125, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--bg-app);
+            color: var(--text-primary);
+            font-family: 'Inter', 'Prompt', sans-serif;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            padding: 48px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(43, 127, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        header h1 {
+            font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== NAVIGATION TABS ===== */
+        .tabs-navigation-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: -28px auto 36px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .tabs-nav {
+            display: inline-flex;
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            padding: 8px;
+            gap: 6px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 22px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-light);
+            background: rgba(43, 127, 255, 0.08);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            color: #FFFFFF;
+            box-shadow: 0 4px 16px rgba(43, 127, 255, 0.3);
+        }
+
+        /* ===== SEARCH ===== */
+        .search-wrapper {
+            max-width: 700px;
+            margin: 0 auto 36px;
+            position: relative;
+        }
+
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .search-control {
+            width: 100%;
+            padding: 16px 130px 16px 56px;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background: var(--bg-surface);
+            box-shadow: 0 0 0 4px rgba(43, 127, 255, 0.1), var(--shadow-md);
+        }
+
+        .search-counter {
+            position: absolute;
+            right: 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(43, 127, 255, 0.12);
+            padding: 6px 14px;
+            border-radius: var(--radius-lg);
+            white-space: nowrap;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== TABLE ===== */
+        .table-responsive {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            overflow-x: auto;
+            margin-bottom: 36px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(27, 95, 208, 0.08) 0%, rgba(43, 127, 255, 0.08) 100%);
+            color: var(--primary-dark);
+            padding: 16px 18px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+            transition: background 0.2s ease;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--bg-surface-alt);
+        }
+
+        td strong {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        /* ===== KANBAN CARDS ===== */
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+
+        .kanban-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kanban-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-light), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .kanban-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .kanban-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .kanban-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary-dark);
+            line-height: 1.3;
+        }
+
+        .kanban-badge {
+            background: linear-gradient(135deg, rgba(43, 127, 255, 0.15), rgba(0, 212, 255, 0.1));
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: var(--radius-lg);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            border: 1px solid rgba(43, 127, 255, 0.2);
+        }
+
+        .kanban-field {
+            margin-bottom: 12px;
+            font-size: 0.88rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .kanban-field:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .kanban-label {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        /* ===== CALCULATOR & CONTENT CARDS ===== */
+        .calc-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calc-title {
+            font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calc-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .calc-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            background: var(--bg-surface-alt);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background: var(--bg-surface);
+            box-shadow: 0 0 0 4px rgba(43, 127, 255, 0.1);
+        }
+
+        .btn-calc {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(43, 127, 255, 0.3);
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(43, 127, 255, 0.4);
+        }
+
+        .calc-result {
+            margin-top: 24px;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(43, 127, 255, 0.08) 0%, rgba(0, 212, 255, 0.08) 100%);
+            border-left: 4px solid var(--primary-light);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        /* ===== BADGES & BRAND TAGS ===== */
+        .badge-brand-blackmores { background-color: #ffecb3; color: #7f5f00; font-weight: 700; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+        .badge-brand-mega { background-color: #e1f5fe; color: #0277bd; font-weight: 700; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+        .badge-brand-vistra { background-color: #f3e5f5; color: #7b1fa2; font-weight: 700; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+
+        .badge-danger { background: rgba(255, 107, 107, 0.15); color: var(--text-primary); border: 1px solid rgba(255, 107, 107, 0.3); padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.8rem; display: inline-block; }
+        .badge-warning { background: rgba(255, 165, 0, 0.15); color: #E65100; border: 1px solid rgba(255, 165, 0, 0.3); padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.8rem; display: inline-block; }
+
+        .pill-tag {
+            background: var(--bg-surface-alt);
+            border: 1px solid var(--border-light);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: inline-block;
+        }
+
+        .alert-box {
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.08);
+            border-left: 5px solid var(--danger);
+            color: var(--text-primary);
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 0, 0.08);
+            border-left: 5px solid var(--warning);
+            color: #B7791F;
+        }
+
+        .alert-info {
+            background: rgba(43, 127, 255, 0.08);
+            border-left: 5px solid var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* ===== FOOTER & DISCLAIMER ===== */
+        .disclaimer-box {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.08) 0%, rgba(255, 165, 0, 0.08) 100%);
+            border: 2px solid var(--danger);
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-top: 36px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-light);
+            padding: 32px 24px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .calc-row { grid-template-columns: 1fr; }
+            .calc-card { padding: 20px; }
+            .tabs-nav { flex-wrap: wrap; }
+            .kanban-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>QuickRx</h1>
+        <p>Modern Pharmacy Reference Tool</p>
+    </header>
+
+    <div class="container">
+        <!-- NAVIGATION TABS -->
+        <div class="tabs-navigation-wrapper">
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab('table-view', this)">💻 Computer/Tablet View</button>
+                <button class="tab-btn" onclick="switchTab('kanban-view', this)">📱 Mobile View</button>
+                <button class="tab-btn" onclick="switchTab('pediatric-tab', this)">👶 Pediatric</button>
+                <button class="tab-btn" onclick="switchTab('vitamin-tab', this)">🥗 Vitamins</button>
+                <button class="tab-btn" onclick="switchTab('contraceptive-tab', this)">💊 Contraceptives</button>
+            </div>
+        </div>
+
+        <!-- GLOBAL SEARCH BAR (Active for Computer/Tablet & Mobile Views) -->
+        <div class="search-wrapper" id="global-search-container">
+            <div class="search-input-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="db-search" class="search-control" placeholder="Search medications, conditions, systems..." oninput="executeDataFilter()">
+                <span class="search-counter" id="match-counter">62 results</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: COMPUTER/TABLET VIEW -->
+        <div id="table-view" class="tab-content active">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition</th>
+                            <th>System</th>
+                            <th>1st Line</th>
+                            <th>2nd Line</th>
+                            <th>Alternative</th>
+                            <th>Drug Notes</th>
+                            <th>Disease Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medication-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: MOBILE VIEW -->
+        <div id="kanban-view" class="tab-content">
+            <div class="kanban-container" id="kanban-cards-wrapper">
+            </div>
+        </div>
+
+        <!-- TAB 3: PEDIATRIC VIEW & CALCULATORS -->
+        <div id="pediatric-tab" class="tab-content">
+            <div class="calc-card">
+                <div class="calc-title">💊 Pediatric Medication Reference</div>
+                <p class="calc-subtitle">
+                    คำนวณขนาดยาเด็กตามน้ำหนัก (Select a medication formulation and enter patient weight)
+                </p>
+                <div class="calc-row">
+                    <div class="form-group">
+                        <label>Select Medication (เลือกตำรับยา)</label>
+                        <select id="ped-med-select" class="form-control" onchange="runPedMedCalc()">
+                            <option value="">-- Choose formulation --</option>
+                            <option value="azithromycin">Azithromycin 200 mg/5mL</option>
+                            <option value="amox250">Amoxicillin 250 mg/5mL</option>
+                            <option value="amox125">Amoxicillin 125 mg/5mL</option>
+                            <option value="para120">Paracetamol 120 mg/5mL</option>
+                            <option value="para160">Paracetamol 160 mg/5mL</option>
+                            <option value="para250">Paracetamol 250 mg/5mL</option>
+                            <option value="ibuprofen">Ibuprofen 100 mg/5mL</option>
+                            <option value="desloratadine">Desloratadine 0.5 mg/mL</option>
+                            <option value="cetirizine">Cetirizine 1 mg/mL</option>
+                            <option value="bromhexine">Bromhexine 4 mg/5mL</option>
+                            <option value="levodropropizine">Levodropropizine 30 mg/5mL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Child's Weight (น้ำหนักเด็ก Kg)</label>
+                        <input type="number" id="ped-weight" class="form-control" placeholder="e.g., 20" oninput="runPedMedCalc()">
+                    </div>
+                </div>
+                <div id="ped-reference-output" class="calc-result" style="display: none;"></div>
+
+                <div style="margin-top: 32px;">
+                    <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-bottom: 16px;">📖 Quick Reference Guidelines</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Dosing Guideline</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Azithromycin 200 mg/5mL</strong></td>
+                                    <td>10 mg/kg loading dose, then 5 mg/kg/day for 4 days</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amoxicillin 250 mg/5mL</strong></td>
+                                    <td>20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amoxicillin 125 mg/5mL</strong></td>
+                                    <td>20-45 mg/kg/day divided into 3 doses (6.7-15 mg/kg per dose TID)</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Paracetamol 120 mg/5mL</strong></td>
+                                    <td>10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day)</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Paracetamol 160 mg/5mL</strong></td>
+                                    <td>10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day)</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Paracetamol 250 mg/5mL</strong></td>
+                                    <td>10-15 mg/kg per dose every 4-6 hours (Max 5 doses/day)</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bromhexine 4 mg/5mL</strong></td>
+                                    <td>0.4-0.8 mg/kg/day in divided doses</td>
+                                    <td><span style="font-weight: bold;">⚠️ Limited data</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Levodropropizine 30 mg/5mL</strong></td>
+                                    <td>1.5-2 mg/kg per dose TID-QID</td>
+                                    <td><span style="font-weight: bold;">⚠️ Limited data</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ibuprofen 100 mg/5mL</strong></td>
+                                    <td>5-10 mg/kg per dose every 6-8 hours, max 40 mg/kg/day</td>
+                                    <td>Calculated via weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Desloratadine 0.5 mg/mL</strong></td>
+                                    <td>Weight-based: 0.125-0.25 mg/kg/day</td>
+                                    <td>Age-dependent dosing</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cetirizine 1 mg/mL</strong></td>
+                                    <td>0.25 mg/kg BID or 0.5 mg/kg OD</td>
+                                    <td>Age-dependent dosing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc-card">
+                <div class="calc-title">🧪 Volume Calculator (mL)</div>
+                <p class="calc-subtitle">
+                    คำนวณปริมาตรยาเด็กโดยใช้น้ำหนักตัว ขนาดยาต่อน้ำหนัก และความเข้มข้นยา (Volume Calculator; mL)
+                </p>
+                <div class="calc-row">
+                    <div class="form-group">
+                        <label>Patient Weight (น้ำหนักเด็ก Kg)</label>
+                        <input type="number" id="ml-weight" class="form-control" placeholder="e.g., 20">
+                    </div>
+                    <div class="form-group">
+                        <label>Dose per kg (ขนาดยาต่อน้ำหนัก Mg/Kg)</label>
+                        <input type="number" id="ml-dose-mg-kg" class="form-control" placeholder="e.g., 15">
+                    </div>
+                </div>
+                <div class="calc-row">
+                    <div class="form-group">
+                        <label>Medication Concentration (ความเข้มข้นยา Mg/mL)</label>
+                        <input type="number" id="ml-concentration" class="form-control" step="0.1" placeholder="e.g., 40 for 200mg/5mL">
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button class="btn-calc" onclick="calculateMlDose()">Calculate Volume</button>
+                    </div>
+                </div>
+                <div id="ml-calc-result" class="calc-result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 4: VITAMINS SECTION (MERGED CONTENT) -->
+        <div id="vitamin-tab" class="tab-content">
+            <div class="search-wrapper">
+                <div class="search-input-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="vitaminSearch" class="search-control" placeholder="ค้นหาวิตามิน, ยี่ห้อ, สรรพคุณ..." onkeyup="filterVitaminTable()">
+                </div>
+            </div>
+
+            <div class="calc-card">
+                <div class="calc-title">🥗 รายการวิตามินและอาหารเสริมบนชั้นวาง (จำแนกตามยี่ห้อ)</div>
+                <p class="calc-subtitle">คู่มือสรุปวิตามินในร้านยา จำแนกตามแบรนด์ ส่วนประกอบ และข้อบ่งใช้ทางคลินิก</p>
+                
+                <div class="table-responsive">
+                    <table id="vitaminTable">
+                        <thead>
+                            <tr>
+                                <th>ยี่ห้อ (Brand)</th>
+                                <th>ชื่อผลิตภัณฑ์ (Product Name)</th>
+                                <th>ส่วนประกอบหลัก / ความแรง</th>
+                                <th>ข้อบ่งใช้ / สรรพคุณตามป้ายยา</th>
+                                <th>กลุ่มผู้ใช้ที่เหมาะสม (Target Group)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- BLACKMORES -->
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Bio C 1000 mg / Daily IMU+</strong></td>
+                                <td>Vitamin C 1000 mg + Bioflavonoids</td>
+                                <td>เป็นหวัดบ่อย, เจ็บคอ, เพิ่มภูมิคุ้มกัน, พักผ่อนน้อย</td>
+                                <td>ผู้ที่ต้องการเสริมภูมิคุ้มกัน, คนทำงานหนักพักผ่อนน้อย</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Naturetime Buffered C</strong></td>
+                                <td>Buffered Vitamin C (ทยอยปลดปล่อย)</td>
+                                <td>ให้วิตามินซีค่อยๆ ปลดปล่อย ไม่ระคายเคืองกระเพาะอาหาร</td>
+                                <td>ผู้ที่มีปัญหาโรคกระเพาะ หรือไวต่อกรดวิตามินซี</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Exec B's</strong></td>
+                                <td>Vitamin B Complex + C + Zinc, Mg, Ca</td>
+                                <td>บำรุงระบบประสาท, คลายความเครียดจากการทำงาน, ผิวพรรณสดใส</td>
+                                <td>วัยทำงานที่เครียดสูง, ผู้พักผ่อนน้อย, ผู้สูงอายุ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Multi B</strong></td>
+                                <td>Vitamin B1, B2, B3, B5, B6, B12, Folic acid</td>
+                                <td>บำรุงระบบประสาท, ลดอาการเหนื่อยล้าอ่อนเพลีย</td>
+                                <td>ผู้ที่ต้องการวิตามินบีบำรุงร่างกายเป็นประจำ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Hyperiforte</strong></td>
+                                <td>St. John's Wort Extract (สารสกัดเซนต์จอนส์เวิร์ต)</td>
+                                <td>ช่วยผ่อนคลาย คลายความกังวล ช่วยให้นอนหลับสบายขึ้น</td>
+                                <td>ผู้ที่มีความกังวล ความเครียด มีปัญหาการนอนหลับ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Bio Folic</strong></td>
+                                <td>Folic Acid (กรดโฟลิก) 500 mcg</td>
+                                <td>เตรียมตัวมีบุตร, บำรุงเลือด, ช่วยการเจริญเติบโตของทารก</td>
+                                <td>หญิงเตรียมตัวตั้งครรภ์ และสตรีมีครรภ์ระยะแรก</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Bio Calcium+D3</strong></td>
+                                <td>Calcium Carbonate + Vitamin D3</td>
+                                <td>เสริมสร้างกระดูกและฟันให้แข็งแรง, ช่วยการดูดซึมแคลเซียม</td>
+                                <td>ผู้สูงอายุ, ผู้เสี่ยงกระดูกบาง/พรุน, ผู้ต้องการแคลเซียม</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Bio Zinc A Chelate</strong></td>
+                                <td>Zinc Amino Acid Chelate + Vitamin A</td>
+                                <td>ลดสิวผด/สิวเสี้ยน/สิวอักเสบ, ปรับสภาพผิวแห้ง-มัน, เสริมภูมิคุ้มกัน</td>
+                                <td>ผู้มีปัญหาสิว หน้ามัน และผู้ต้องการบำรุงภูมิคุ้มกัน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-blackmores">Blackmores</span></td>
+                                <td><strong>Mini Fish Oil</strong></td>
+                                <td>Concentrated Omega-3 (EPA & DHA) เม็ดเล็ก</td>
+                                <td>บำรุงสมอง สายตา หัวใจ, เม็ดเล็กทานง่าย ไม่มีกลิ่นคาว</td>
+                                <td>ผู้ที่ไม่ชอบเม็ดใหญ่ ผู้ต้องการบำรุงสมอง/หลอดเลือด</td>
+                            </tr>
+
+                            <!-- MEGA WE CARE -->
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Fish Oil 1000 mg</strong></td>
+                                <td>Fish Oil (EPA 180 mg, DHA 120 mg)</td>
+                                <td>บำรุงสมอง ความจำ, ลดคอเลสเตอรอล, ลดการอักเสบ, บำรุงสายตา</td>
+                                <td>วัยทำงาน ผู้สูงอายุ ผู้มีไขมันในเลือดสูง ปวดข้อ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Lecithin 1200 mg</strong></td>
+                                <td>Phosphatidylcholine (เลซิตินจากถั่วเหลือง)</td>
+                                <td>บำรุงตับ, ลดตับอักเสบ/ไขมันพอกตับ, บำรุงสมองและความจำ</td>
+                                <td>ผู้สังสรรค์บ่อย, ผู้มีภาวะไขมันพอกตับ, ผู้บำรุงสมอง</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>NAT B</strong></td>
+                                <td>High Potency Vitamin B Complex (วิตามินบีปริมาณสูง)</td>
+                                <td>บำรุงระบบประสาท, ลดเหนื่อยล้าจากการทำงานหนัก, ฟื้นฟูร่างกาย</td>
+                                <td>คนทำงานหนักมาก, ผู้ป่วยระยะพักฟื้น, ผู้ชาตามปลายมือปลายเท้า</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>NAT D</strong></td>
+                                <td>Vitamin D3 (Cholecalciferol)</td>
+                                <td>ช่วยดูดซึม Calcium & Phosphorus, เสริมกระดูก/ฟัน, บำรุงกล้ามเนื้อ</td>
+                                <td>ผู้ไม่ค่อยโดนแดด, ผู้มีภาวะกระดูกบาง/พรุน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>NAT C</strong></td>
+                                <td>Vitamin C 1000 mg + Bioflavonoids, Rutin, Hesperidin</td>
+                                <td>เสริมภูมิคุ้มกัน, เสริมสร้างคอลลาเจน, ลดอาการภูมิแพ้</td>
+                                <td>ผู้เป็นภูมิแพ้บ่อย, ผู้ทำงานหนัก, ผู้บำรุงผิวพรรณ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>D-TOXI</strong></td>
+                                <td>Silymarin + Liver Nutrients (สารสกัดล้างสารพิษตับ)</td>
+                                <td>ฟื้นฟูและบำรุงเซลล์ตับ, ช่วยขับสารพิษออกจากตับ</td>
+                                <td>ผู้ที่ดื่มแอลกอฮอล์เป็นประจำ, ทานยาเยอะ, สารพิษสะสม</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>NAT MAG</strong></td>
+                                <td>Magnesium 350 mg + Vitamin B1, B6</td>
+                                <td>บรรเทาอาการตะคริว/เหน็บชา, ป้องกันไมเกรน, ช่วยการนอนหลับ</td>
+                                <td>ผู้ที่เป็นตะคริวบ่อย, ผู้ปวดหัวไมเกรน, ผู้มีปัญหาการนอน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Zincomin</strong></td>
+                                <td>Zinc + Vitamin E, C, B-Complex</td>
+                                <td>เสริมภูมิคุ้มกัน, ป้องกันผมร่วง, บำรุงผม-เล็บ-ผิว, เสริมฮอร์โมนเพศชาย</td>
+                                <td>ผู้มีปัญหาผมร่วง, สิว, ผู้ชายที่ต้องการดูแลสุขภาพสืบพันธุ์</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Calcium-D</strong></td>
+                                <td>Calcium Carbonate + Vitamin D3</td>
+                                <td>บำรุงกระดูกและฟัน, ป้องกันโรคกระดูกพรุนและกระดูกบาง</td>
+                                <td>ผู้สูงอายุ, หญิงวัยหมดประจำเดือน, ผู้ขาดแคลเซียม</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Soygerm Cal-D</strong></td>
+                                <td>Soy Isoflavones (จมูกถั่วเหลือง) + Calcium + D3</td>
+                                <td>ปรับสมดุลฮอร์โมนพืช (Phytoestrogen), ลดอาการวัยทอง, บำรุงกระดูก</td>
+                                <td>สตรีวัยทอง (Menopause), สตรีที่มีอาการร้อนวูบวาบ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-mega">Mega We Care</span></td>
+                                <td><strong>Evening Primrose Oil (EPO) 1000 mg</strong></td>
+                                <td>Gamma-Linolenic Acid (GLA)</td>
+                                <td>บรรเทาอาการก่อนมีประจำเดือน (PMS), บำรุงผิวแห้งชุ่มชื้น</td>
+                                <td>สตรีที่มีอาการปวดคัดเต้านม/หงุดหงิดก่อนมีประจำเดือน, ผิวแห้งมาก</td>
+                            </tr>
+
+                            <!-- VISTRA -->
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Acerola Cherry 1000 mg</strong></td>
+                                <td>Acerola Cherry Extract + Citrus Bioflavonoids</td>
+                                <td>ต้านอนุมูลอิสระ, เสริมสร้างคอลลาเจน, เสริมภูมิคุ้มกัน, ผิวกระจ่างใส</td>
+                                <td>ผู้ที่ต้องการวิตามินซีธรรมชาติ, ผู้บำรุงผิวพรรณ ร่วมกับคอลลาเจน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Marine Collagen TriPeptide 1300</strong></td>
+                                <td>Marine Collagen Tripeptide + CoQ10 + Vitamin C</td>
+                                <td>ดูดซึมเร็ว, บำรุงผิวพรรณเรียบเนียน, ลดริ้วรอย, เพิ่มความยืดหยุ่นผิว</td>
+                                <td>ผู้ที่ต้องการบำรุงผิวพรรณชะลอริ้วรอย</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Collagen Type II</strong></td>
+                                <td>Undenatured Collagen Type II (UC-II)</td>
+                                <td>บำรุงข้อต่อ, ลดการสึกหรอของกระดูกอ่อนข้อเข่า, บรรเทาปวดข้อ</td>
+                                <td>ผู้มีปัญหาข้อเข่าเสื่อม, ผู้สูงอายุ, นักกีฬา</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Coenzyme Q10</strong></td>
+                                <td>Coenzyme Q10 30 mg</td>
+                                <td>ต้านอนุมูลอิสระระดับเซลล์, บำรุงกล้ามเนื้อหัวใจ, ชะลอวัย</td>
+                                <td>ผู้ที่ต้องการดูแลหัวใจ, ผู้ทานยาลดไขมัน Statin, ผู้บำรุงผิว</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>L-Carnitine 500 mg</strong></td>
+                                <td>L-Carnitine L-Tartrate</td>
+                                <td>ช่วยลำเลียงกรดไขมันเข้าสู่กระบวนการเผาผลาญพลังงาน</td>
+                                <td>ผู้ที่ออกกำลังกาย, ผู้ต้องการควบคุมน้ำหนัก/เผาผลาญไขมัน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Ginkgo 115</strong></td>
+                                <td>Ginkgo Biloba Leaf Extract (สารสกัดแปะก๊วย)</td>
+                                <td>เพิ่มการไหลเวียนเลือดไปเลี้ยงสมอง, บำรุงความจำ, ป้องกันอัลไซเมอร์</td>
+                                <td>วัยเรียน วัยทำงาน ผู้สูงอายุที่มีอาการหลงลืม/ชาตามปลายมือ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>B-Complex Plus Minerals</strong></td>
+                                <td>Vitamin B Complex + Zinc, Copper, Manganese</td>
+                                <td>บำรุงประสาทและสมอง, คลายความเหนื่อยล้า, สดชื่นกระปรี้กระเปร่า</td>
+                                <td>ผู้ที่อ่อนเพลีย สมองล้า จากการเรียนหรือทำงานหนัก</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Astaxanthin 6 mg</strong></td>
+                                <td>Natural Astaxanthin (สารสกัดจากสาหร่ายแดง)</td>
+                                <td>ราชาแห่งสารต้านอนุมูลอิสระ, ปกป้องริ้วรอยรุนแรง, บำรุงสายตา/ดวงตา</td>
+                                <td>ผู้ที่ต้องการต้านชะลอวัยขั้นสูง, ผู้ทำงานหน้าจอคอมพิวเตอร์</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Magnesium Complex</strong></td>
+                                <td>Magnesium + Vitamin B1, B6, B12</td>
+                                <td>ป้องกันตะคริว, ผ่อนคลายกล้ามเนื้อ, ลดความถี่การปวดไมเกรน</td>
+                                <td>ผู้ที่เป็นตะคริวกลางคืน, ผู้ปวดศีรษะไมเกรน</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Gluta Complex 800 / 1000</strong></td>
+                                <td>L-Glutathione + Alpha Lipoic Acid + Cysteine</td>
+                                <td>ยับยั้งการสร้างเม็ดสีเมลานิน, ช่วยให้ผิวกระจ่างใส, ล้างสารพิษตับ</td>
+                                <td>ผู้ที่ต้องการบำรุงผิวกระจ่างใส, ลดรอยหมองคล้ำ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Night Time / Rice Germ Oil</strong></td>
+                                <td>GABA + Rice Germ Oil + Melatonin Precursors</td>
+                                <td>คลายเครียดระบบประสาท, ช่วยให้หลับสนิทง่ายขึ้นอย่างเป็นธรรมชาติ</td>
+                                <td>ผู้มีปัญหานอนไม่หลับ หลับไม่ลึก นอนหลับยาก</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-brand-vistra">Vistra</span></td>
+                                <td><strong>Zinc 15 mg</strong></td>
+                                <td>Zinc Amino Acid Chelate</td>
+                                <td>ลดสิว, สมานแผล, ควบคุมความมันบนใบหน้า, เสริมภูมิคุ้มกัน, บำรุงผม/เล็บ</td>
+                                <td>ผู้มีปัญหาสิว หน้ามัน ผมร่วง เล็บเปราะ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: CONTRACEPTIVE PILLS SECTION (MERGED CONTENT) -->
+        <div id="contraceptive-tab" class="tab-content">
+            <div class="calc-card">
+                <div class="calc-title">🌸 แนวทางการใช้ยาคุมกำเนิดและการเลือกยี่ห้อยาในร้านยา</div>
+                <p class="calc-subtitle">สรุปข้อมูลกลไก การเลือกยี่ห้อยา ข้อห้ามใช้ ACHES Alert และแนวทางแก้ไขกรณีลืมทานยา</p>
+
+                <!-- SECTION 1: MECHANISM -->
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-bottom: 12px;">1. กลไกการออกฤทธิ์และส่วนประกอบของยาคุมกำเนิด</h3>
+                <div class="alert-box alert-info">
+                    <ul>
+                        <li><strong>ยาคุมกำเนิดชนิดฮอร์โมนรวม (Combined Oral Contraceptive - COC):</strong>
+                            <ul>
+                                <li><strong>กลไก:</strong> ยับยั้งการตกไข่, รบกวนการเคลื่อนที่ของไข่ในท่อนำไข่, ทำให้มูกที่ปากมดลูกเหนียวข้น (อสุจิเคลื่อนผ่านยาก), และปรับเยื่อบุผนังมดลูกไม่ให้เหมาะกับการฝังตัวของตัวอ่อน (ประสิทธิภาพ 99.9%)</li>
+                                <li><strong>Estrogen component:</strong> ส่วนใหญ่คือ <i>Ethinyl Estradiol (EE)</i> หรือ Mestranol</li>
+                                <li><strong>Progestin component:</strong> C-21 progestins (Cyproterone), 19-nortestosterone (Desogestrel, Gestodene) และ 4th gen Anti-mineralocorticoid (Drospirenone)</li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 8px;"><strong>ยาคุมกำเนิดชนิดฮอร์โมนเดี่ยว (Progestin-Only Pills - POP):</strong> มีเฉพาะ Progestin เหมาะกับหญิงให้นมบุตร หรือผู้ที่มีข้อห้ามใช้ Estrogen</li>
+                    </ul>
+                </div>
+
+                <!-- SECTION 2: BRAND COMPARISON TABLE -->
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-top: 28px; margin-bottom: 12px;">2. ตารางเปรียบเทียบยี่ห้อยาคุมกำเนิดในร้านยา และการเลือกใช้ทางคลินิก</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ยี่ห้อยาในร้านยา</th>
+                                <th>ปริมาณ Estrogen (EE)</th>
+                                <th>ชนิดและปริมาณ Progestin</th>
+                                <th>จุดเด่น / ข้อบ่งใช้ที่เหมาะสม</th>
+                                <th>กลุ่มผู้ป่วยที่แนะนำ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Yasmin</strong> (ยัสมิน)</td>
+                                <td>EE 30 mcg (Low dose)</td>
+                                <td>Drospirenone 3 mg (4th Gen)</td>
+                                <td>ไม่ทำให้อ้วน/บวมน้ำ, ลดสิว, ปรับสภาพผิว, คุมกำเนิดดีเยี่ยม</td>
+                                <td>ผู้ที่กลัวน้ำหนักขึ้น บวมน้ำ มีสิวปานกลาง</td>
+                            </tr>
+                            <tr>
+                                <td><strong>YAZ</strong> (ยาส) / <strong>Synfonia</strong></td>
+                                <td>EE 20 mcg (Ultra-low dose)</td>
+                                <td>Drospirenone 3 mg (24+4 เม็ด)</td>
+                                <td>เอสโตรเจนต่ำมาก คลื่นไส้น้อย, ลดบวมน้ำ, ลดสิว, รักษา PMDD (อารมณ์หงุดหงิดก่อนมีประจำเดือน)</td>
+                                <td>ผู้แพ้ฮอร์โมนง่าย คลื่นไส้ วัยรุ่น ผู้มีอาการอารมณ์แปรปรวนก่อนมีประจำเดือน</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diane-35</strong> / <strong>Sucee</strong> / <strong>Preme</strong></td>
+                                <td>EE 35 mcg</td>
+                                <td>Cyproterone acetate 2 mg (Anti-androgen สูง)</td>
+                                <td>ฤทธิ์ต้านฮอร์โมนเพศชายสูงมาก รักษาสิวรุนแรง หน้ามัน ขนดก ภาวะถุงน้ำในรังไข่ (PCOS)</td>
+                                <td>ผู้ที่มีปัญหาสิวเห่อรุนแรง หน้ามันมาก ขนดกแบบผู้ชาย</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mercilon</strong> (เมอร์ซิลอน) / <strong>Minidoz</strong></td>
+                                <td>EE 20 mcg / 15 mcg</td>
+                                <td>Desogestrel 150 mcg / Gestodene 60 mcg</td>
+                                <td>ฮอร์โมนต่ำ ผลข้างเคียงเรื่องเวียนหัวคลื่นไส้น้อยมาก ไม่สะสมในร่างกาย</td>
+                                <td>ผู้เริ่มกินยาคุมแผงแรก, คนตัวเล็ก (&lt;50 kg), คนไวต่อผลข้างเคียง Estrogen</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gynera</strong> / <strong>Meliane</strong> / <strong>Minny</strong></td>
+                                <td>EE 30 mcg / 20 mcg</td>
+                                <td>Gestodene 75 mcg / 20 mcg (3rd Gen)</td>
+                                <td>คุมกำเนิดคุมรอบเดือนได้ดี เลือดออกกระปริดกระปรอยน้อย คุณภาพดี standard</td>
+                                <td>ผู้ต้องการคุมกำเนิดทั่วไป รอบเดือนสม่ำเสมอ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cerazette</strong> / <strong>Exluton</strong> / <strong>Dailyton</strong></td>
+                                <td><strong>ไม่มี Estrogen (0 mcg)</strong></td>
+                                <td>Desogestrel 75 mcg / Lynestrenol 0.5 mg (POP)</td>
+                                <td>ไม่มี Estrogen ไม่กระทบการสร้างน้ำนม ไม่เพิ่มเสี่ยงลิ่มเลือดจาก Estrogen</td>
+                                <td><strong>สตรีให้นมบุตร</strong>, หญิงอายุ &gt;35 ปีที่สูบบุหรี่, ผู้ป่วยไมเกรนชนิด Aura</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SECTION 3: ACHES ALERT & CONTRAINDICATIONS -->
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-top: 28px; margin-bottom: 12px;">3. ข้อห้ามใช้ & สัญญาณเตือนอันตราย (ACHES Alert)</h3>
+                <div class="alert-box alert-danger">
+                    <h4 style="font-size: 1rem; margin-bottom: 8px;">🚫 ข้อห้ามใช้เด็ดขาดสำหรับยาคุมชนิดฮอร์โมนรวม (Absolute Contraindications)</h4>
+                    <ul style="padding-left: 20px;">
+                        <li>ประวัติโรคหลอดเลือดอุดตัน (Thromboembolic disease, VTE), โรคหลอดเลือดสมอง (Stroke), โรคหัวใจขาดเลือด (MI, CAD)</li>
+                        <li>ภาวะไขมันในเลือดสูงแต่กำเนิด (Congenital hyperlipidemia)</li>
+                        <li>เป็นหรือสงสัยว่าเป็นมะเร็งเต้านม, มะเร็งระบบสืบพันธุ์ หรือเนื้องอกที่ตอบสนองต่อฮอร์โมน</li>
+                        <li>มีเลือดออกทางช่องคลอดผิดปกติโดยไม่ทราบสาเหตุ</li>
+                        <li>ตั้งครรภ์หรือสงสัยว่าตั้งครรภ์ (Pregnancy Category X)</li>
+                        <li>ตับทำงานผิดปกติรุนแรง, ตับโต, มะเร็งตับ, ประวัติโรคดีซ่านระหว่างตั้งครรภ์/จากการใช้ยาคุม</li>
+                        <li><strong>หญิงอายุมากกว่า 35 ปี ที่สูบบุหรี่มากกว่า 15 มวน/วัน</strong></li>
+                        <li>โรคปวดศีรษะไมเกรนที่มี Aura, โรคความดันโลหิตสูงที่ควบคุมไม่ได้, เบาหวานที่มีภาวะแทรกซ้อนหลอดเลือด</li>
+                    </ul>
+                </div>
+
+                <div class="alert-box alert-warning">
+                    <h4 style="font-size: 1rem; margin-bottom: 8px;">⚠️ อาการเตือนอันตรายรุนแรงระหว่างใช้ยาคุม (อักษรย่อ ACHES)</h4>
+                    <div class="table-responsive" style="margin-top: 10px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 12%;">ตัวอักษร</th>
+                                    <th style="width: 38%;">อาการ (Symptom)</th>
+                                    <th style="width: 50%;">ภาวะเสี่ยงที่ต้องสงสัย (Indication)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong style="font-size: 1.1rem;">A</strong></td>
+                                    <td><strong>Abdominal pain</strong> (ปวดท้องรุนแรง)</td>
+                                    <td>ลิ่มเลือดอุดตันในช่องท้อง (Abdominal thromboembolism), เนื้องอกตับ (Liver adenoma), โรคถุงน้ำดี</td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="font-size: 1.1rem;">C</strong></td>
+                                    <td><strong>Chest pain</strong> (ปวดแน่นหน้าอก/หายใจขัด)</td>
+                                    <td>ลิ่มเลือดอุดตันในปอด (Pulmonary Embolism; PE), หัวใจขาดเลือด (Angina, MI)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="font-size: 1.1rem;">H</strong></td>
+                                    <td><strong>Headache</strong> (ปวดศีรษะรุนแรงเฉียบพลัน)</td>
+                                    <td>โรคหลอดเลือดสมอง (Stroke), ความดันโลหิตสูงวิกฤต</td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="font-size: 1.1rem;">E</strong></td>
+                                    <td><strong>Eye problems</strong> (การมองเห็นผิดปกติ/ตาพร่ามัว)</td>
+                                    <td>ลิ่มเลือดอุดตันในหลอดเลือดตา (Blood clot in eye), Stroke</td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="font-size: 1.1rem;">S</strong></td>
+                                    <td><strong>Severe leg pain</strong> (ปวดน่อง/ขาบวมแดงปวด)</td>
+                                    <td>ลิ่มเลือดอุดตันในหลอดเลือดดำชั้นลึก (Venous Thromboembolism; VTE)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: MISSED PILL & INTERACTIONS -->
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-top: 28px; margin-bottom: 12px;">4. การจัดการกรณีลืมรับประทานยา (Missed Pill Guide - CDC 2018) & ปฏิกิริยาระหว่างยา</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>สถานการณ์ (Scenario)</th>
+                                <th>แนวทางการแก้ไข & คำแนะนำลูกค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ลืมทานยาฮอร์โมน 1 เม็ด</strong><br>(นึกได้ไม่เกิน 48 ชม.)</td>
+                                <td>
+                                    • ให้รับประทาน 1 เม็ดทันทีที่นึกได้ และรับประทานเม็ดต่อไปตามเวลาปกติ (อาจต้องทาน 2 เม็ดในวันเดียวกัน)<br>
+                                    • <strong>ไม่ต้องใช้การคุมกำเนิดวิธีอื่นร่วมด้วย</strong> (เว้นแต่ลืมในช่วงเม็ดที่ 1-7 หรือ 15-21 อาจพิจารณายาคุมฉุกเฉินประกอบ)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>ลืมทานยาฮอร์โมน 2 เม็ดขึ้นไป</strong><br>(นานเกิน 48 ชม.)</td>
+                                <td>
+                                    • ให้ทาน 1 เม็ดทันทีที่นึกได้ เม็ดต่อไปทานตามปกติ (ทิ้งเม็ดที่ลืมก่อนหน้า)<br>
+                                    • <strong>ต้องคุมกำเนิดด้วยวิธีอื่น (เช่น ถุงยางอนามัย) หรือเว้นการมีเพศสัมพันธ์ต่อเนื่องอย่างน้อย 7 วัน</strong><br>
+                                    • <i>หากลืมช่วงเม็ดที่ 1-7 และมีเพศสัมพันธ์แบบไม่ได้ป้องกัน:</i> แนะนำทานยาคุมฉุกเฉินร่วมด้วย<br>
+                                    • <i>หากลืมช่วงเม็ดที่ 15-21:</i> ทานยาเม็ดฮอร์โมนจนหมดแผง แล้ว<strong>เริ่มแผงใหม่ทันทีโดยข้ามเม็ดแป้ง/ช่วงเว้นยา 7 วัน</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>ทานร่วมกับ ยาปฏิชีวนะ (Broad Spectrum)</strong><br>(Tetracyclines, Penicillins, Cephalosporins)</td>
+                                <td>
+                                    • ยาทำลายเชื้อแบคทีเรียปกติในลำไส้ (Normal flora) อาจลดการดูดซึมยากลับ (Enterohepatic recirculation)<br>
+                                    • แนะนำให้ใช้การคุมกำเนิดวิธีอื่นร่วมด้วย (เช่น ถุงยางอนามัย) ระหว่างใช้ยาปฏิชีวนะ
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>ทานร่วมกับ ยาเร่งเอนไซม์ตับ (Enzyme Inducers)</strong><br>(Rifampicin, Phenytoin, Phenobarbital, Carbamazepine)</td>
+                                <td>
+                                    • ยาจะเร่ง Metabolism ของฮอร์โมน ทำให้ระดับยาคุมในเลือดลดลง ประสิทธิภาพคุมกำเนิดล้มเหลว<br>
+                                    • <strong>ต้องป้องกันด้วยวิธีอื่น (ถุงยาง) ขณะใช้ยา และคุมต่ออีกอย่างน้อย 4 สัปดาห์หลังหยุดยาเหล่านั้น</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SECTION 5: SPECIAL POPULATIONS & SIDE EFFECTS -->
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem; margin-top: 28px; margin-bottom: 12px;">5. การเลือกใช้ในกรณีพิเศษ & การปรับยาตามผลข้างเคียงฮอร์โมน</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ภาวะของผู้ป่วย / ผลข้างเคียงที่พบ</th>
+                                <th>คำแนะนำในการเลือกยา / การปรับขนาดฮอร์โมน</th>
+                                <th>ยี่ห้อยาที่แนะนำเป็นตัวอย่าง</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>อายุ &gt; 35 ปี & สูบบุหรี่ &gt; 15 มวน/วัน</strong></td>
+                                <td><span class="badge-danger">ห้ามใช้ COC!</span> ให้เปลี่ยนไปใช้ Progestin-Only Pills (POP) หรือ IUD แทน</td>
+                                <td>Cerazette, Exluton</td>
+                            </tr>
+                            <tr>
+                                <td><strong>อายุ &gt; 35 ปี (ไม่สูบบุหรี่) / วัยรุ่น / น้ำหนักน้อย (&lt;50 kg)</strong></td>
+                                <td>ใช้ Estrogen ขนาดต่ำ (Low dose EE &lt; 50 mcg หรือ Ultra-low EE 15-20 mcg)</td>
+                                <td>YAZ, Mercilon, Minidoz</td>
+                            </tr>
+                            <tr>
+                                <td><strong>สตรีหลังคลอด / ให้นมบุตร</strong></td>
+                                <td>
+                                    • <i>ให้นมบุตร:</i> ใช้ Progestin-Only Pills (POP) ได้ตั้งแต่ &lt;6 สัปดาห์หลังคลอด<br>
+                                    • <i>ไม่ได้ให้นมบุตร:</i> ใช้ COC ได้หลังคลอด 21 วันขึ้นไป (หากไม่มีความเสี่ยง VTE)
+                                </td>
+                                <td>Cerazette (POP)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ความดันโลหิตสูง (Hypertension)</strong></td>
+                                <td>Estrogen ทำให้ BP เพิ่มขึ้น 6-8 mmHg หากควบคุมความดันไม่ได้ <span class="badge-danger">ห้ามใช้ COC</span> ให้ใช้ POP แทน</td>
+                                <td>Cerazette</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ผู้ป่วยไมเกรน / SLE / โรคตับ</strong></td>
+                                <td>เลี่ยง Estrogen เพราะกระตุ้นไมเกรน/การอุดตัน ให้เลือกใช้ Progestin-Only Pills (POP) หรือ IUD</td>
+                                <td>Cerazette</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estrogen excess</strong><br>(คลื่นไส้, เจ็บเต้านม, ปวดหัว, บวมน้ำ)</td>
+                                <td>ลดขนาด Estrogen (EE) หรือเปลี่ยนไปใช้ Drospirenone / Progestin-Only</td>
+                                <td>YAZ, Minidoz, Mercilon</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estrogen deficiency</strong><br>(เลือดออกกระปริดกระปรอยช่วงวันแรกๆ, ประจำเดือนไม่มา)</td>
+                                <td>เพิ่มขนาด Estrogen (EE) (ตรวจให้แน่ใจว่าไม่ได้ตั้งครรภ์ก่อน)</td>
+                                <td>Yasmin, Gynera, Sucee</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Progestin excess / Androgen สูง</strong><br>(หน้ามัน, สิวเห่อ, ขนดก, น้ำหนักขึ้น)</td>
+                                <td>เปลี่ยนใช้ Progestin ที่มีฤทธิ์ Anti-androgen สูง หรือ Drospirenone</td>
+                                <td>Diane-35, Sucee, Yasmin, YAZ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Progestin deficiency</strong><br>(เลือดออกกระปริดกระปรอยช่วงหลัง, ปวดประจำเดือนมาก)</td>
+                                <td>เพิ่มขนาด Progestin หรือใช้สูตร Extended-cycle / NSAIDs ช่วยปวดประจำเดือน</td>
+                                <td>Gynera, Yasmin</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert-box alert-info" style="margin-top: 20px;">
+                    <p><strong>📌 หมายเหตุการทดสอบตั้งครรภ์ (Pregnancy Test):</strong> เป็นการตรวจหาฮอร์โมน <strong>HCG (Human Chorionic Gonadotropin)</strong> ที่สร้างจากรก ผลิตหลังปฏิสนธิ 6-8 วัน และสูงมากสัปดาห์ที่ 8-12 ผลจะแม่นยำ &gt;90% เมื่อประจำเดือนขาดไปแล้วอย่างน้อย 10-14 วัน</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDICAL DISCLAIMER -->
+        <div class="disclaimer-box">
+            <strong>! MEDICAL DISCLAIMER</strong><br>
+            เว็บสรุปการเลือกใช้ยาในร้านยา By SEPaster เป็นเพียงตัวช่วยในการตัดสินใจเลือกใช้ยาในร้านยาเท่านั้น การเลือกจ่ายยาควรพิจารณาอาการ โรคประจำตัวและยาที่ใช้ รวมทั้งประวัติอื่นๆร่วมด้วย<br>
+            This tool is for educational reference only. Always consult current clinical guidelines, patient records, official drug information, and local regulations before administering any medication. Healthcare professionals are responsible for independent verification and clinical judgment.
+        </div>
+    </div>
+
+    <footer>
+        <p>QuickRx Modern Pharmacy Reference Tool | For healthcare professionals. Educational use only.</p>
+        <p>Last updated: July 2026</p>
+    </footer>
+
+    <!-- JS SCRIPT FOR DATA & CALCULATIONS -->
+    <script>
+        // FULL 62 CLINICAL CONDITIONS FROM PDF REFERENCE (INCLUDES RED TEXT REPLACEMENTS)
+        const medicationData = [
+            {
+                condition: "ตาแห้ง (Dry eyes)",
+                system: "Eye",
+                line1: "น้ำตาเทียม หยด BID-QID",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "- หากหยอดต่อเนื่องเป็นเวลานาน แนะนำแบบรายวัน เนื่องจากไม่มีสารกันเสีย<br>- เหมาะสำหรับผู้ที่ใส่ contact lens"
+            },
+            {
+                condition: "เยื่อบุตาอักเสบจากอาการแพ้ (Allergic conjunctivitis)",
+                system: "Eye",
+                line1: "Hista-Oph 1 หยด QID",
+                line2: "น้ำตาเทียม หยด BID-QID",
+                alt: "",
+                drugNotes: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br>- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม",
+                diseaseNotes: "- เลี่ยงสารก่อแพ้<br>- ประคบเย็นช่วยลดอาการได้"
+            },
+            {
+                condition: "เยื่อบุตาอักเสบจากไวรัส (Viral conjunctivitis)",
+                system: "Eye",
+                line1: "Hista-Oph 1 หยด QID",
+                line2: "น้ำตาเทียม หยด BID-QID",
+                alt: "",
+                drugNotes: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br>- หยอด Hista-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม<br>เลี่ยงการให้ topical steroid เนื่องจากทำให้อาการแย่ลงได้",
+                diseaseNotes: "- เลี่ยงการใช้ของร่วมกับผู้อื่น งดว่ายน้ำ 2 สัปดาห์<br>- ประคบเย็นช่วยลดอาการได้<br>- หายได้เองใน 2 สัปดาห์ การหยอดตาจะช่วยลดอาการและทำให้สบายตาขึ้น"
+            },
+            {
+                condition: "เยื่อบุตาอักเสบจากแบคทีเรีย (Bacterial conjunctivitis)",
+                system: "Eye",
+                line1: "Poly-oph 1 หยด QID (นาน 5-7 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา",
+                diseaseNotes: "โอกาสหายเองต่ำ จึงต้องใช้ยาฆ่าเชื้อต่อเนื่อง"
+            },
+            {
+                condition: "ตากุ้งยิง (Stye)_มีอาการเฉพาะที่เท่านั้น",
+                system: "Eye",
+                line1: "Poly-oph 1 หยด QID (นาน 5-7 วัน)",
+                line2: "Terramycin ointment ป้ายตา (นาน 5-7 วัน)",
+                alt: "",
+                drugNotes: "- ยาหยอดตา เปิดแล้วเก็บได้ 1 เดือนในตู้เย็น<br>- เวลาหยอดยา พยายามไม่ให้ปลายหลอดสัมผัสดวงตา<br>- หยอด Poly-Oph ก่อน เว้น 15 นาที แล้วค่อยหยอดน้ำตาเทียม<br>- หยอดน้ำตาเทียมก่อน เว้น 15 นาที แล้วค่อยป้ายขี้ผึ้ง<br>- ขี้ผึ้งป้ายตาแล้วทำให้ตามัวๆได้แนะนำให้ป้ายก่อนนอน",
+                diseaseNotes: "- ประคบอุ่นช่วยลดอาการและทำให้หายเร็วขึ้นได้"
+            },
+            {
+                condition: "ตากุ้งยิง (Stye)_มีอาการทาง systemic ด้วย",
+                system: "Eye",
+                line1: "Dicloxacillin 500 mg QID ac (นาน 5-7 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "- แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "ขี้หูอุดตัน",
+                system: "Ear",
+                line1: "Docusate sodium (DeWax) หยอดเข้ารู 5-10 หยด (ค้างไว้นาน 15 นาที)",
+                line2: "",
+                alt: "",
+                drugNotes: "- ใช้ลูกยางบีบน้ำอุ่นล้างรูหู ภายหลังจากหยอดยา",
+                diseaseNotes: ""
+            },
+            {
+                condition: "หูชั้นนอกอักเสบจากแบคทีเรีย (Bacterial otitis externa)",
+                system: "Ear",
+                line1: "Poly-oph 1 หยด QID (นาน 7 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "หูชั้นนอกอักเสบจากเชื้อรา (Fungal otitis externa)",
+                system: "Ear",
+                line1: "Clotrimazole 1% solution 4 หยด QID (นาน 7 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "หูชั้นกลางอักเสบ (Otitis media) อาการไม่รุนแรง",
+                system: "Respiratory",
+                line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc",
+                line2: "Amoxicillin 1000 mg BID pc (นาน 5-7 วัน)",
+                alt: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc (นาน 3 วัน)",
+                drugNotes: "- แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล หรือ กินติดต่อกัน 7 วัน หยิบ 3 แผงให้ได้ 30 แคปซูล)<br>- Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง มี 6 แคปซูล)",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "หูชั้นกลางอักเสบ (Severe otitis media) อาการรุนแรง มีไข้สูง",
+                system: "Respiratory",
+                line1: "Amoxicillin-Clavulanic acid 1 g BID pc (นาน 5-7 วัน)",
+                line2: "",
+                alt: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc (นาน 3 วัน)",
+                drugNotes: "- Augmentin (กินติดต่อกัน 7 วัน หยิบ 1 กล่อง ให้ครบ 14 เม็ด)<br>- Zithromax (กินติดต่อกัน 3 วัน หยิบ 1 กล่อง มี 6 แคปซูล)",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "จมูกอักเสบจากภูมิแพ้ไม่รุนแรง (Mild allergic rhinitis)",
+                system: "Respiratory",
+                line1: "Cetirizine 10 mg OD pc หรือยาแก้แพ้ 2nd generation ตัวอื่นๆ",
+                line2: "ล้างจมูกด้วยน้ำเกลือ",
+                alt: "",
+                drugNotes: "- ยาแก้แพ้อาจทำให้ง่วงนอนได้ แต่ส่วนใหญ่มักง่วงน้อย",
+                diseaseNotes: ""
+            },
+            {
+                condition: "จมูกอักเสบภูมิแพ้รุนแรง (Severe allergic rhinitis)",
+                system: "Respiratory",
+                line1: "Mometasone furoate 0.05% พ่นยา 1 พ่นเข้ารูจมูกทั้ง 2 ข้าง วันละ 1 ครั้ง",
+                line2: "ล้างจมูกด้วยน้ำเกลือ",
+                alt: "",
+                drugNotes: "- พ่นยาสม่ำเสมอ เพื่อให้ผลการรักษามีประสิทธิภาพ เนื่องจากยาใช้เวลาออกฤทธิ์ (หลักสัปดาห์-เดือน)",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ไข้หวัด (Common cold)",
+                system: "Respiratory",
+                line1: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID",
+                line2: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc",
+                alt: "Carbocysteine 500 mg (Solmax) TID pc",
+                drugNotes: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง",
+                diseaseNotes: "- สามารถล้างจมูกเพื่อช่วยลดอาการคัดจมูกได้"
+            },
+            {
+                condition: "ไข้หวัดใหญ่ (Flu)",
+                system: "Respiratory",
+                line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc",
+                line2: "Chlorpheniramine + Phenylephrine 4/10 (Nasolin) mg TID pc",
+                alt: "Oseltamivir (ต้องไปรับยาที่โรงพยาบาล เมื่อเป็นผู้ป่วยความเสี่ยงสูง)",
+                drugNotes: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง",
+                diseaseNotes: ""
+            },
+            {
+                condition: "คอหอยอักเสบจากไวรัส (Viral pharyngitis)",
+                system: "Respiratory",
+                line1: "ยาอม Strepsil หรือสเปรย์พ่นคอ Propoliz TID-QID",
+                line2: "Paracetamol prn q 4-6 hr หรือ Ibuprofen",
+                alt: "",
+                drugNotes: "- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง",
+                diseaseNotes: ""
+            },
+            {
+                condition: "คอหอยอักเสบจากแบคทีเรีย (GAS pharyngitis)",
+                system: "Respiratory",
+                line1: "Amoxicillin 500 mg BID pc (นาน 10 วัน)",
+                line2: "กรณีแพ้ penicillin = Azithromycin 500 mg OD pc (นาน 5 วัน)",
+                alt: "",
+                drugNotes: "- แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 10 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล)<br>- Zithromax (กินติดต่อกัน 5 วัน หยิบ 2 กล่อง มี 12 แคปซูล)",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "ไซนัสอักเสบจากแบคทีเรีย (Bacterial sinusitis)",
+                system: "Respiratory",
+                line1: "Amoxicillin 500 mg TID pc (นาน 5-7 วัน)",
+                line2: "Amoxicillin-Clavulanic acid 1 g BID pc (นาน 5-7 วัน)",
+                alt: "กรณีแพ้ Penicillin = Azithromycin 500 mg OD pc (นาน 5-7 วัน)",
+                drugNotes: "- แคปซูลฟ้าเขียว (กินติดต่อกันอย่างน้อย 5-7 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล)<br>- Zithromax (กินติดต่อกัน 5 วัน หยิบ 2 กล่อง มี 12 แคปซูล)",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "เลิกบุหรี่ (Smoking cessation)",
+                system: "Respiratory",
+                line1: "Nicotine gum 2-4 mg เคี้ยวแล้วพัก สลับไปเรื่อยๆ ทุก<br>- 1-2 hr นาน 6 สัปดาห์<br>- 2-4 hr นาน 3 สัปดาห์<br>- 4-8 hr นาน 3 สัปดาห์",
+                line2: "",
+                alt: "",
+                drugNotes: "- ปกติสูบ 10-24 มวนต่อวัน เลือกขนาด 2 mg<br>- ปกติสูบมากกว่าเท่ากับ 25 มวนต่อวัน เลือกขนาด 4 mg",
+                diseaseNotes: ""
+            },
+            {
+                condition: "เวียนหัว (Dizziness)",
+                system: "Nervous",
+                line1: "Dimenhydrinate 50 mg TID pc",
+                line2: "Betahistine 8-16 mg TID pc",
+                alt: "Cinnarizine 25 mg TID pc",
+                drugNotes: "- Dimenhydrinate ทำให้มีอาการง่วงนอนมาก ระวังการขับขี่ยานพาหนะหรือควบคุมเครื่องจักร",
+                diseaseNotes: ""
+            },
+            {
+                condition: "อาการปวด (Pain)",
+                system: "Miscellaneous",
+                line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc",
+                line2: "Mefenamic acid 500 mg TID pc",
+                alt: "Celecoxib 200 mg BID pc",
+                drugNotes: "- ห้ามจ่าย Celecoxib ในผู้ที่มีประวัติแพ้ sulfa<br>- เป็นยารักษาตามอาการ เมื่อหายแล้วไม่ต้องทานต่อเนื่อง",
+                diseaseNotes: ""
+            },
+            {
+                condition: "อาการปวดปลายประสาท (Neuropathic pain)",
+                system: "Nervous",
+                line1: "Amitriptylline 10-25 mg OD hs",
+                line2: "Gabapentin 300 mg OD q12h หรือ q8h",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ปวดหัวไมเกรน (Migraine)",
+                system: "Nervous",
+                line1: "Ibuprofen 400 mg TID pc",
+                line2: "Ergotamine 1 mg รับประทาน 1-2 เม็ดทันที ตามด้วย 1 เม็ดทุก 30 นาที ไม่เกิน 6 เม็ดต่อวัน 10 เม็ดต่อสัปดาห์",
+                alt: "Sumatriptan 25-100 mg q2hr ไม่เกิน 200 mg ต่อวัน",
+                drugNotes: "Ergotamine ห้ามใช้ร่วมกับยากลุ่ม<br>- PI inhibitor<br>- Macrolide<br>เนื่องจากทำให้เกิด Ergotism รุนแรงได้ ควรถามประวัติการใช้ยาก่อนเสมอ",
+                diseaseNotes: "- แนะนำให้เลี่ยงปัจจัยกระตุ้น ซึ่งอาจแตกต่างกันในแต่ละบุคคล"
+            },
+            {
+                condition: "แผลในกระเพาะอาหาร (Gastric ulcer)",
+                system: "Gastrointestinal",
+                line1: "Omeprazole 20-40 mg ac เช้า นาน 2-4 สัปดาห์ (อาจถึง 8 สัปดาห์ได้)",
+                line2: "Antacid 30 mL QID pc",
+                alt: "Triple therapy for Helicobacter pylori<br>- Omeprazole 20 mg BID pc<br>- Amoxicillin 1000 mg BID pc<br>- Clarithromycin 500 mg BID pc",
+                drugNotes: "",
+                diseaseNotes: "- พยายามรับประทานอาหารให้ตรงเวลา"
+            },
+            {
+                condition: "กรดไหลย้อน (GERD)",
+                system: "Gastrointestinal",
+                line1: "Omeprazole 20-40 mg OD ac เช้า นาน 2-4 สัปดาห์",
+                line2: "Sodium alginate 15 mL TID pc + hs",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "- ไม่ควรนอนราบทันทีหลังมื้ออาหาร"
+            },
+            {
+                condition: "ท้องผูก (Constipation)",
+                system: "Gastrointestinal",
+                line1: "ทั่วไป แต่ไม่รุนแรง: Milk of magnesia 30 mL OD<br>- ทั่วไป และรุนแรง: Senna หรือ Bisacodyl 2 เม็ด OD",
+                line2: "เด็ก: - Glycerin suppository 1 เม็ด rectal OD<br>- NaCl enema สวนทวาร",
+                alt: "สูงอายุ หรือตั้งครรภ์: Bulk forming laxative 1 ซอง ผสมน้ำ OD",
+                drugNotes: "- Senna ไม่ควรใช้ติดต่อกันบ่อยๆ เนื่องจากทำให้ลำไส้ชินได้<br>- ระวังการใช้ Milk of magnesia ในผู้ป่วยโรคไต<br>- เมื่อสวน NaCl enema แล้ว ให้กลั้นอุจจาระไว้ประมาณ 5-15 นาที เมื่อทนไม่ไหวค่อยลุกไปเข้าห้องน้ำ เพื่อให้ยาออกฤทธิ์ได้ดีที่สุด",
+                diseaseNotes: "- เพิ่มปริมาณกากใยโดยการรับประทานผัก ผลไม้ หรือดื่มน้ำมากๆ<br>- Tramadol ทำให้มีอาการท้องผูกได้ อาจสอบถามผู้ป่วยเพิ่มเติมเรื่องยาที่ใช้ประจำ"
+            },
+            {
+                condition: "ท้องเสีย (Diarrhea)",
+                system: "Gastrointestinal",
+                line1: "ORS ผสมน้ำ จิบบ่อยๆ ตลอดวัน",
+                line2: "Loperamide 4 mg ทันทีตามด้วย 2 mg ทุกครั้งที่ถ่าย ไม่เกิน 16 mg ต่อวัน",
+                alt: "Diosmectite 3 g TID pc",
+                drugNotes: "- Loperamide สำหรับคนที่จำเป็นต้องหยุดถ่าย ไม่เหมาะกับท้องเสียจากการติดเชื้อแบคทีเรีย<br>- Diosmectite ควรทานห่างจากยาอื่น 2 ชั่วโมง เนื่องจากเป็น clay ที่ดูดซับยาอื่นได้",
+                diseaseNotes: "งดนม หรืออาหารเสี่ยงปนเปื้อนชั่วคราว"
+            },
+            {
+                condition: "ท้องเสียจากการติดเชื้อแบคทีเรีย (Infectious diarrhea)",
+                system: "Gastrointestinal",
+                line1: "ORS ผสมน้ำ จิบบ่อยๆ ตลอดวัน",
+                line2: "Norfloxacin 400 mg BID (3-7 วัน)",
+                alt: "Domperidone 10 mg TID ac",
+                drugNotes: "- Hyoscine butylbromide (Buscopan) 10 mg TID pc",
+                diseaseNotes: "- ต้องกินยาฆ่าเชื้อต่อเนื่อง จนหมด เพื่อไม่ให้ดื้อยา"
+            },
+            {
+                condition: "ริดสีดวงทวาร (Hemorrhoids)",
+                system: "Gastrointestinal",
+                line1: "Daflon 500 mg 2x3 นาน 4 วัน, 2x2 นาน 3 วัน, 2x1 จนหมดกล่อง",
+                line2: "Proctosedyl suppository เหน็บ OD",
+                alt: "Proctosedyl cream ทา OD-BID",
+                drugNotes: "- Daflon 500 mg 1 กล่องมี 30 เม็ด<br>- Proctosedyl suppository และ cream ควรใช้ไม่นานเกิน 5-7 วัน",
+                diseaseNotes: "- เลี่ยงการนั่งในห้องน้ำนาน"
+            },
+            {
+                condition: "ผื่นผิวหนังอักเสบ (Atopic dermatitis)",
+                system: "Skin",
+                line1: "Triamcinolone 0.02-0.1% cream ทาบางๆ บริเวณที่เป็น BID",
+                line2: "บริเวณที่ผิวบาง เช่น ผิวหน้า เลือกใช้ Hydrocortisone cream ทาบางๆบริเวณที่เป็น BID",
+                alt: "บริเวณผิวหนา เช่น ฝ่ามือ ฝ่าเท้า เลือกใช้ Clobetasol cream ทาบางๆ บริเวณที่เป็น BID",
+                drugNotes: "เมื่อผื่นหายแล้ว ไม่จำเป็นต้องใช้ต่อเนื่อง สามารถหยุดยาได้เลย เพื่อป้องกัน side effect จากการใช้ corticosteroid เป็นเวลานาน",
+                diseaseNotes: "- ตัวโรคอาจเกิดได้จากหลายสาเหตุ หรืออาจไม่มีสาเหตุแน่ชัด"
+            },
+            {
+                condition: "ผื่นผ้าอ้อม (Diaper rash)",
+                system: "Skin",
+                line1: "Zinc oxide ทา BID",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "แนะนำให้เปลี่ยนผ้าอ้อมบ่อยครั้ง เพื่อป้องกันการอับชื้น"
+            },
+            {
+                condition: "ผื่นแพ้ต่อมไขมัน (Sebderm or Seborrheic Dermatitis)",
+                system: "Skin",
+                line1: "Selenium sulfide ทา BID",
+                line2: "Coal tar ทา BID",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "การป้องกันแผลติดเชื้อ (Wound infection prevention)",
+                system: "Skin",
+                line1: "Dicloxacillin 250 mg QID (นาน 2 วัน)",
+                line2: "กรณีแพ้ Penicillin = Clindamycin 150-300 mg QID (นาน 2 วัน)",
+                alt: "ล้างแผลด้วยน้ำเกลือ สามารถใช้แอลกอฮอล์เช็ดรอบแผลเพื่อทำความสะอาดรอบๆได้",
+                drugNotes: "- แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 2 วัน หยิบ 1 แผงให้ครบ 10 แคปซูล)",
+                diseaseNotes: "- ไม่ควรใช้แอลกอฮอล์ราดแผลเพื่อทำความสะอาดโดยตรง เนื่องจากทำให้เนื้อเยื่อระคายเคือง"
+            },
+            {
+                condition: "แผลติดเชื้อ (Infected wound)",
+                system: "Skin",
+                line1: "Dicloxacillin 500 mg QID (นาน 5-7 วัน)",
+                line2: "กรณีแพ้ Penicillin = Clindamycin 150-300 mg QID (นาน 5-7 วัน)",
+                alt: "ล้างแผลด้วยน้ำเกลือ สามารถใช้แอลกอฮอล์เช็ดรอบแผลเพื่อทำความสะอาดรอบๆได้",
+                drugNotes: "- แคปซูลฟ้าขาว (กินติดต่อกันอย่างน้อย 5 วัน หยิบ 2 แผงให้ครบ 20 แคปซูล)",
+                diseaseNotes: "- ไม่ควรใช้แอลกอฮอล์ราดแผลเพื่อทำความสะอาดโดยตรง เนื่องจากทำให้เนื้อเยื่อระคายเคือง"
+            },
+            {
+                condition: "กลาก (Ringworm)",
+                system: "Skin",
+                line1: "Antifungal cream หรืออาจใช้สูตรผสมกับ steroid ก็ได้ ทา BID",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "เกลื้อน (Tinea Versicolor)",
+                system: "Skin",
+                line1: "Antifungal cream หรืออาจใช้สูตรผสมกับ steroid ก็ได้ ทา BID",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ราที่เล็บ (Onychomycosis)",
+                system: "Skin",
+                line1: "Itraconazole 200 mg 1x2 pc นาน 1 สัปดาห์ เว้น 3 สัปดาห์ นับเป็น 1 cycle<br>- เล็บมือ 2 เดือน<br>- เล็บเท้า 3 เดือน",
+                line2: "",
+                alt: "",
+                drugNotes: "กินยานาน 1 สัปดาห์ เว้น 3 สัปดาห์ นับเป็น 1 cycle เรียกว่า Pulse therapy",
+                diseaseNotes: ""
+            },
+            {
+                condition: "สะเก็ดเงิน (Psoriasis)",
+                system: "Skin",
+                line1: "Topical corticosteroid ทา BID",
+                line2: "Calcitriol ointment ทา BID",
+                alt: "Topical retinoids ทา OD",
+                drugNotes: "- Topical retinoids ทาก่อนนอน อาจทำให้ผิวไวต่อแสงได้ แนะนำให้ใช้สารกันแดดร่วมด้วย",
+                diseaseNotes: ""
+            },
+            {
+                condition: "อีสุกอีใส (Chickenpox)",
+                system: "Infectious",
+                line1: "Aciclovir 800 mg q6h (นาน 5 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "- Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)",
+                diseaseNotes: ""
+            },
+            {
+                condition: "งูสวัด (Herpes zoster)",
+                system: "Infectious",
+                line1: "Aciclovir 800 mg q4h (นาน 7-10 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "- Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)",
+                diseaseNotes: "ผู้ป่วยที่เคยเป็นอีสุกอีใส เมื่อพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชื้อไวรัสกลับมาได้"
+            },
+            {
+                condition: "เริ่มที่ปาก (Herpes simplex)",
+                system: "Infectious",
+                line1: "เป็นครั้งแรก: Aciclovir 200 mg q4hr (นาน 7-10 วัน) หรือ Aciclovir 400 mg q8hr (นาน 7-10 วัน)",
+                line2: "เป็นครั้งถัดไป: - Aciclovir cream ทา q4hr (นาน 5 วัน)",
+                alt: "",
+                drugNotes: "- Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)",
+                diseaseNotes: "การพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชื้อไวรัสในปมประสาทให้กลับมาก่อโรคได้"
+            },
+            {
+                condition: "เริ่มที่อวัยวะเพศ (Herpes simplex)",
+                system: "Infectious",
+                line1: "เป็นครั้งแรก: Aciclovir 200 mg q4hr (นาน 7-10 วัน) หรือ Aciclovir 400 mg q8hr (นาน 7-10 วัน)",
+                line2: "เป็นครั้งถัดไป: - Aciclovir cream ทา q4hr (นาน 5 วัน)",
+                alt: "",
+                drugNotes: "- Aciclovir (กินติดต่อกันอย่างน้อย 5 วัน หยิบตามจำนวนวันที่กิน)",
+                diseaseNotes: "การพักผ่อนน้อย หรือมีความเครียด สามารถกระตุ้นเชื้อไวรัสในปมประสาทให้กลับมาก่อโรคได้"
+            },
+            {
+                condition: "หิด (Scabies)",
+                system: "Skin",
+                line1: "Permethrin 5% ทาไว้ 8-14 hr แล้วล้างออก",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "เลี่ยงการใช้ของร่วมกับผู้อื่น และทำความสะอาดเครื่องนอนด้วยน้ำร้อน"
+            },
+            {
+                condition: "เหา โลน (Lice)",
+                system: "Skin",
+                line1: "Permethrin 1% ทาไว้ 10 นาที แล้วล้างออก",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "เลี่ยงการใช้ของร่วมกับผู้อื่น โดยเฉพาะหวี และทำความสะอาดเครื่องนอนด้วยน้ำร้อน"
+            },
+            {
+                condition: "รังแค (Dandruff)",
+                system: "Skin",
+                line1: "Selenium sulfide สระ 2-3 ครั้งต่อสัปดาห์",
+                line2: "Coal tar สระ 2-3 ครั้งต่อสัปดาห์",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ผมร่วง (Alopecia)",
+                system: "Skin",
+                line1: "Finasteride 1 mg hs (เฉพาะผู้ชาย)",
+                line2: "Minoxidil 2.5-5% ทาลงหนังศีรษะ BID",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: ""
+            },
+            {
+                condition: "กระเพาะปัสสาวะอักเสบ (Urinary tract infection - UTI)",
+                system: "Infectious",
+                line1: "Norfloxacin 400 mg BID ac (นาน 3 วัน)",
+                line2: "Ciprofloxacin 500 mg BID ac (นาน 3 วัน)",
+                alt: "Ciprofloxacin 500 mg BID ac (นาน 7 วัน)",
+                drugNotes: "",
+                diseaseNotes: "ดื่มน้ำในปริมาณมากขึ้น และไม่กลั้นปัสสาวะ"
+            },
+            {
+                condition: "ยาคุมกำเนิด (Oral contraceptive)",
+                system: "OBGY",
+                line1: "Combined oral contraceptive pills (COCs) วันละ 1 เม็ด แบบ 21 เม็ด เว้น 7 วันหลังหมดแผง ค่อยเริ่มต้นแผงใหม่ / แบบ 28 เม็ด เริ่มแผงต่อไปได้ทันที",
+                line2: "Progestin only pills (POPs) สำหรับ<br>- อายุมากกว่า 35 ปี ที่สูบบุหรี่<br>- SLE<br>- ไมเกรน<br>- มะเร็งเต้านม มะเร็งอวัยวะสืบพันธุ์ที่เกี่ยวกับฮอร์โมน<br>- หลอดเลือดอุดตัน (Venous thromboembolism)<br>- โรคอ้วน เบาหวาน ความดันโลหิตสูง",
+                alt: "",
+                drugNotes: "Yas (Drospirenone) / Dian-35 (Cyproterone) อาจใช้เพื่อคุมกำเนิดและลดสิวได้",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ยาคุมกำเนิดฉุกเฉิน (Emergency contraceptive)",
+                system: "OBGY",
+                line1: "Levonorgestrel 1.5 mg ทันที",
+                line2: "",
+                alt: "",
+                drugNotes: "รับประทานทันที ภายใน 72 ชั่วโมง หลังเพศสัมพันธ์ (หากมีน้ำให้ทานทันทีในร้านเลย) ไม่แนะนำให้ใช้เกิน 2 ครั้งภายใน 1 รอบเดือน อาจทำให้คลื่นไส้หรืออาเจียนได้",
+                diseaseNotes: ""
+            },
+            {
+                condition: "เลื่อนประจำเดือน (Period delay pills)",
+                system: "OBGY",
+                line1: "Norethisterone 5 mg BID-TID ก่อนกำหนดประจำเดือนอย่างน้อย 3 วัน เมื่อหยุดยาแล้ว ประจำเดือนจะมาภายใน 2-3 วัน",
+                line2: "",
+                alt: "",
+                drugNotes: "ไม่ควรใช้ติดต่อกันเกิน 10-14 วัน",
+                diseaseNotes: ""
+            },
+            {
+                condition: "เหงือกอักเสบ (Gingivitis)",
+                system: "Miscellaneous",
+                line1: "Paracetamol prn q 4-6 hr หรือ Ibuprofen 400 mg TID pc",
+                line2: "กรณีมีหนอง = Amoxicillin-clavulanic acid 1 g BID pc (นาน 5-7 วัน)",
+                alt: "กรณีมีหนอง และแพ้ Penicillin = Clindamycin 150-300 mg QID pc (นาน 5-7 วัน)",
+                drugNotes: "Augmentin (กินติดต่อกัน 7 วัน หยิบ 1 กล่องให้ครบ 14 เม็ด)",
+                diseaseNotes: ""
+            },
+            {
+                condition: "อาการนอนไม่หลับ (Insomnia)",
+                system: "Nervous",
+                line1: "พบจิตแพทย์เพื่อปรึกษา",
+                line2: "Diphenhydramine 50 mg OD hs",
+                alt: "",
+                drugNotes: "ยาแก้แพ้ (PheNZ) ช่วยให้ง่วงนอน เนื่องจากเป็นฤทธิ์ของยาแก้แพ้ชนิดง่วงมาก ช่วยได้ระยะสั้นเท่านั้น อย่างไรหากมีปัญหาเรื้อรังแนะนำปรึกษาจิตแพทย์เพิ่มเติม",
+                diseaseNotes: ""
+            },
+            {
+                condition: "แผลในปาก (Canker sore)",
+                system: "Miscellaneous",
+                line1: "Triamcinolone oral paste",
+                line2: "Kamilosan-Gel N (เจลป้ายยาแบบสมุนไพร+ยาชา)",
+                alt: "",
+                drugNotes: "อาจถามลูกค้าว่า ต้องการรับแบบซองหรือแบบหลอด<br>เป็นแผลกัดปาก แนะนำเจลป้ายปากสารสกัดสมุนไพร ส่วนอาการร้อนในสามารถใช้ triamcinolone oral paste ได้",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ตามหายารักษาโรคเรื้อรัง (Chronic diseases medication)",
+                system: "Miscellaneous",
+                line1: "ลูกค้ามักมีตัวอย่างแผงยาให้ดู ระวังการหยิบยาชื่อคล้ายมองคล้าย (LASA medication) สลับความแรง",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "ให้ลูกค้ารับประทานตามที่แพทย์สั่งได้เลย"
+            },
+            {
+                condition: "หนองใน (Gonorrhea)",
+                system: "Infectious",
+                line1: "Cefixime 800 mg once",
+                line2: "Doxycycline 100 mg BID (นาน 7 วัน)",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "ควรรักษาคู่นอนร่วมด้วย เนื่องจากเป็นโรคติดต่อทางเพศสัมพันธ์"
+            },
+            {
+                condition: "แผลริมอ่อน (Chancroid)",
+                system: "Infectious",
+                line1: "Ciprofloxacin 500 mg BID pc (นาน 3 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "ควรรักษาคู่นอนร่วมด้วย เนื่องจากเป็นโรคติดต่อทางเพศสัมพันธ์"
+            },
+            {
+                condition: "ปวดเมื่อยกล้ามเนื้อ (Muscle ache)",
+                system: "Musculoskeletal",
+                line1: "Counterpain ทาบริเวณที่ปวดเมื่อย TID",
+                line2: "Paracetamol-Orphenadrine citrate 500 mg TID pc",
+                alt: "",
+                drugNotes: "Norgesic ไม่ควรกินติดต่อกันเกิน 3-5 วัน",
+                diseaseNotes: ""
+            },
+            {
+                condition: "ปวดเก๊าท์ (Gout)",
+                system: "Musculoskeletal",
+                line1: "Colchicine 0.6 mg กิน 1-2 เม็ดทันที ตามด้วยครั้งละ 1 เม็ด q1-2hr หรือจนกว่าอาการจะดีขึ้น",
+                line2: "",
+                alt: "",
+                drugNotes: "Colchicine ไม่ควรกินเกิน 8 เม็ดต่อวัน",
+                diseaseNotes: "ควรรับประทานยาเพื่อควบคุมอาการเก๊าท์เป็นประจำ"
+            },
+            {
+                condition: "ตกขาวจากเชื้อรา (Candida vaginitis)",
+                system: "OBGY",
+                line1: "Clotrimazole 200 mg vaginal tablet เหน็บ OD (นาน 3 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "เลี่ยงการสวนล้างช่องคลอด"
+            },
+            {
+                condition: "ตกขาวจากเชื้อแบคทีเรีย (Bacterial vaginitis)",
+                system: "OBGY",
+                line1: "Metronidazole 500 mg BID pc (นาน 7 วัน)",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "เลี่ยงการสวนล้างช่องคลอด"
+            },
+            {
+                condition: "ตกขาวจากเชื้อ Trichomonas (Trichomonal vaginitis)",
+                system: "OBGY",
+                line1: "Metronidazole 2 g once pc",
+                line2: "",
+                alt: "",
+                drugNotes: "",
+                diseaseNotes: "เลี่ยงการสวนล้างช่องคลอด"
+            },
+            {
+                condition: "พยาธิ (Parasitic diseases)",
+                system: "Infectious",
+                line1: "Albendazole 400 mg once",
+                line2: "กรณีคาดว่ามีการติดเชื้อปรสิต = Albendazole 400 mg BID (นาน 3 วัน)",
+                alt: "",
+                drugNotes: "อาจทานยาถ่ายพยาธิเป็นประจำทุกครึ่ง-1 ปี",
+                diseaseNotes: "เลี่ยงการทานอาหารดิบ"
+            }
+        ];
+
+        // RENDER TABLE & KANBAN ON LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMedicationData(medicationData);
+        });
+
+        function renderMedicationData(data) {
+            const tableBody = document.getElementById('medication-table-body');
+            const kanbanWrapper = document.getElementById('kanban-cards-wrapper');
+            const counter = document.getElementById('match-counter');
+
+            tableBody.innerHTML = '';
+            kanbanWrapper.innerHTML = '';
+            counter.textContent = `${data.length} results`;
+
+            data.forEach(item => {
+                // Table Row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.condition}</strong></td>
+                    <td><span class="pill-tag">${item.system}</span></td>
+                    <td>${item.line1 || '-'}</td>
+                    <td>${item.line2 || '-'}</td>
+                    <td>${item.alt || '-'}</td>
+                    <td>${item.drugNotes || '-'}</td>
+                    <td>${item.diseaseNotes || '-'}</td>
+                `;
+                tableBody.appendChild(tr);
+
+                // Kanban Card
+                const card = document.createElement('div');
+                card.className = 'kanban-card';
+                card.innerHTML = `
+                    <div class="kanban-header">
+                        <div class="kanban-title">${item.condition}</div>
+                        <div class="kanban-badge">${item.system}</div>
+                    </div>
+                    <div class="kanban-field">
+                        <div class="kanban-label">1st Line</div>
+                        <div>${item.line1 || '-'}</div>
+                    </div>
+                    ${item.line2 ? `<div class="kanban-field"><div class="kanban-label">2nd Line</div><div>${item.line2}</div></div>` : ''}
+                    ${item.alt ? `<div class="kanban-field"><div class="kanban-label">Alternative</div><div>${item.alt}</div></div>` : ''}
+                    ${item.drugNotes ? `<div class="kanban-field"><div class="kanban-label">Drug Notes</div><div>${item.drugNotes}</div></div>` : ''}
+                    ${item.diseaseNotes ? `<div class="kanban-field"><div class="kanban-label">Disease Notes</div><div>${item.diseaseNotes}</div></div>` : ''}
+                `;
+                kanbanWrapper.appendChild(card);
+            });
+        }
+
+        // GLOBAL SEARCH FILTER
+        function executeDataFilter() {
+            const query = document.getElementById('db-search').value.toLowerCase().trim();
+            const filtered = medicationData.filter(item => {
+                return item.condition.toLowerCase().includes(query) ||
+                       item.system.toLowerCase().includes(query) ||
+                       item.line1.toLowerCase().includes(query) ||
+                       item.line2.toLowerCase().includes(query) ||
+                       item.alt.toLowerCase().includes(query) ||
+                       item.drugNotes.toLowerCase().includes(query) ||
+                       item.diseaseNotes.toLowerCase().includes(query);
+            });
+            renderMedicationData(filtered);
+        }
+
+        // VITAMIN TABLE SEARCH FILTER
+        function filterVitaminTable() {
+            const input = document.getElementById('vitaminSearch');
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById('vitaminTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let match = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+
+            const searchContainer = document.getElementById('global-search-container');
+            if (tabId === 'table-view' || tabId === 'kanban-view') {
+                searchContainer.style.display = 'block';
+            } else {
+                searchContainer.style.display = 'none';
+            }
+        }
+
+        // PEDIATRIC DOSING CALCULATOR
+        function runPedMedCalc() {
+            const med = document.getElementById('ped-med-select').value;
+            const weight = parseFloat(document.getElementById('ped-weight').value);
+            const output = document.getElementById('ped-reference-output');
+
+            if (!med || !weight || isNaN(weight) || weight <= 0) {
+                output.style.display = 'none';
+                return;
+            }
+
+            output.style.display = 'block';
+            let resHtml = '';
+
+            switch(med) {
+                case 'azithromycin':
+                    const azithLoad = (10 * weight / 40).toFixed(1);
+                    const azithMaint = (5 * weight / 40).toFixed(1);
+                    resHtml = `<strong>Azithromycin 200 mg/5mL:</strong><br>• Loading dose (Day 1): <strong>${azithLoad} mL</strong> OD<br>• Maintenance (Days 2-5): <strong>${azithMaint} mL</strong> OD`;
+                    break;
+                case 'amox250':
+                    const amox250Low = ((20 * weight / 3) / 50).toFixed(1);
+                    const amox250High = ((45 * weight / 3) / 50).toFixed(1);
+                    resHtml = `<strong>Amoxicillin 250 mg/5mL:</strong><br>• Dose: <strong>${amox250Low} - ${amox250High} mL</strong> TID pc`;
+                    break;
+                case 'amox125':
+                    const amox125Low = ((20 * weight / 3) / 25).toFixed(1);
+                    const amox125High = ((45 * weight / 3) / 25).toFixed(1);
+                    resHtml = `<strong>Amoxicillin 125 mg/5mL:</strong><br>• Dose: <strong>${amox125Low} - ${amox125High} mL</strong> TID pc`;
+                    break;
+                case 'para120':
+                    const p120low = (10 * weight / 24).toFixed(1);
+                    const p120high = (15 * weight / 24).toFixed(1);
+                    resHtml = `<strong>Paracetamol 120 mg/5mL:</strong><br>• Dose: <strong>${p120low} - ${p120high} mL</strong> every 4-6 hrs (Max 5 doses/day)`;
+                    break;
+                case 'para160':
+                    const p160low = (10 * weight / 32).toFixed(1);
+                    const p160high = (15 * weight / 32).toFixed(1);
+                    resHtml = `<strong>Paracetamol 160 mg/5mL:</strong><br>• Dose: <strong>${p160low} - ${p160high} mL</strong> every 4-6 hrs (Max 5 doses/day)`;
+                    break;
+                case 'para250':
+                    const p250low = (10 * weight / 50).toFixed(1);
+                    const p250high = (15 * weight / 50).toFixed(1);
+                    resHtml = `<strong>Paracetamol 250 mg/5mL:</strong><br>• Dose: <strong>${p250low} - ${p250high} mL</strong> every 4-6 hrs (Max 5 doses/day)`;
+                    break;
+                case 'ibuprofen':
+                    const ibulow = (5 * weight / 20).toFixed(1);
+                    const ibuhigh = (10 * weight / 20).toFixed(1);
+                    resHtml = `<strong>Ibuprofen 100 mg/5mL:</strong><br>• Dose: <strong>${ibulow} - ${ibuhigh} mL</strong> every 6-8 hrs pc`;
+                    break;
+                case 'desloratadine':
+                    resHtml = `<strong>Desloratadine 0.5 mg/mL:</strong><br>• 1-5 yrs: 2.5 mL OD<br>• 6-11 yrs: 5 mL OD<br>• ≥12 yrs: 10 mL OD`;
+                    break;
+                case 'cetirizine':
+                    resHtml = `<strong>Cetirizine 1 mg/mL:</strong><br>• 2-5 yrs: 2.5 - 5 mL OD<br>• ≥6 yrs: 5 - 10 mL OD`;
+                    break;
+                case 'bromhexine':
+                    resHtml = `<strong>Bromhexine 4 mg/5mL:</strong><br>• Dosing guideline: 0.4 - 0.8 mg/kg/day in divided doses.<br><span>⚠️ Limited clinical data. Consult pediatrician.</span>`;
+                    break;
+                case 'levodropropizine':
+                    resHtml = `<strong>Levodropropizine 30 mg/5mL:</strong><br>• Dosing guideline: 1.5 - 2 mg/kg per dose TID-QID.<br><span>⚠️ Limited clinical data. Consult pediatrician.</span>`;
+                    break;
+                default:
+                    output.style.display = 'none';
+            }
+            output.innerHTML = resHtml;
+        }
+
+        // VOLUME CALCULATOR (mL)
+        function calculateMlDose() {
+            const weight = parseFloat(document.getElementById('ml-weight').value);
+            const mgPerKg = parseFloat(document.getElementById('ml-dose-mg-kg').value);
+            const conc = parseFloat(document.getElementById('ml-concentration').value);
+            const output = document.getElementById('ml-calc-result');
+
+            if (isNaN(weight) || isNaN(mgPerKg) || isNaN(conc) || conc <= 0) {
+                output.style.display = 'block';
+                output.innerHTML = `<span>Please enter valid numeric values for all fields.</span>`;
+                return;
+            }
+
+            const totalMg = weight * mgPerKg;
+            const totalMl = (totalMg / conc).toFixed(2);
+
+            output.style.display = 'block';
+            output.innerHTML = `<strong>Calculated Dose:</strong><br>• Total Target Dose: <strong>${totalMg.toFixed(1)} mg</strong><br>• Volume Required: <strong style="font-size: 1.2rem; color: var(--primary);">${totalMl} mL</strong> per dose`;
+        }
+    </script>
+</body>
+</html>
